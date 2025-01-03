@@ -10,6 +10,7 @@ import SwiftUI
 struct ProfileDetailView: View {
     var title:String = "vfd"
     var title2 = "gdf"
+    var action: () -> Void = {}
     var body: some View {
         HStack{
             Image(systemName: "drop")
@@ -20,14 +21,12 @@ struct ProfileDetailView: View {
                 .font(.system(size: 20, weight:.medium, design: .rounded))
                 .foregroundStyle(Color.gray)
             Spacer()
-            Button{
-                
-            }label:{
-                Text(title2)
-                    .font(.system(size: 20, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color.blue)
-            }
-        
+                Button(action: action){
+                    Text(title2)
+                        .font(.system(size: 20, weight: .medium, design: .rounded))
+                        .foregroundStyle(Color.blue)
+                }
+
         }
         .padding()
         Divider()

@@ -16,6 +16,8 @@ class UserModel: ObservableObject {
     @Published var lastUpdated: Date = Date()
     @Published var gender: String = ""
     @Published var weight: Int = 0
+    @Published var wakeup: Date?
+    @Published var sleep: Date?
     
     private let context: NSManagedObjectContext
     
@@ -38,6 +40,8 @@ class UserModel: ObservableObject {
                 self.lastUpdated = userGoal.lastUpdated ?? Date()
                 self.gender = userGoal.gender ?? ""
                 self.weight = Int(userGoal.weight)
+                self.wakeup = userGoal.wakeup ?? Date()
+                self.sleep = userGoal.sleep ?? Date()
                 checkAndResetForNewDay()
             }
         } catch {
@@ -73,6 +77,8 @@ class UserModel: ObservableObject {
             userGoal.lastUpdated = Date()
             userGoal.gender = gender
             userGoal.weight = Int64(weight)
+            userGoal.sleep = Date()
+            userGoal.wakeup = Date()
             
             try context.save()
         } catch {

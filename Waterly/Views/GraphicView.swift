@@ -25,7 +25,7 @@ struct GraphicView: View {
             .pickerStyle(SegmentedPickerStyle())
             .padding()
             
-     
+            Text("\(user.weight)")
         }
     }
     

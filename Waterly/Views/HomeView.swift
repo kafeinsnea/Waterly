@@ -85,9 +85,9 @@ struct HomeView: View {
                     Button("Cancel", role: .cancel) { }
                 }
                
-//                Button( "Reset Progress") {
-//                    user.resetProgress()
-//                }
+                Button( "Reset Progress") {
+                    user.resetProgress()
+                }
                 
                 DailyRecordsView(user:user, filterDate: Date())
 //                Spacer()

@@ -12,16 +12,16 @@ struct RegistrationView: View {
     @ObservedObject var user: UserModel
     @Environment(\.managedObjectContext) var viewContext
     @AppStorage("isRegistered") private var isRegistered: Bool = false
-    
+    @State private var selectedWeight: Int = 0
     
     var body: some View {
-        if isRegistered == true {
-            HomeView(user:user)
-        }else{
+//        if isRegistered == true {
+//            HomeView(user:user)
+//        }else{
             ZStack{
-                Image("background2")
-                    .resizable()
-                    .ignoresSafeArea()
+//                Image("background2")
+//                    .resizable()
+//                    .ignoresSafeArea()
                 
                 VStack{
                     Image("waterr")
@@ -54,7 +54,34 @@ struct RegistrationView: View {
                             .padding()
                             .frame(width: 250,height: 60)
                             .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black.opacity(0.8), lineWidth: 1))
-                        
+                        Text("Weight")
+                            .font(.system(size: 25, weight: .light, design: .serif))
+                            .italic()
+                            .foregroundStyle(Color.black.opacity(0.7))
+
+                        Picker("Select Weight", selection: $user.weight) {
+                            ForEach(30..<200, id: \.self) { weight in
+                                Text("\(weight) kg").tag(weight)
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .frame(width: 250, height: 100)
+                        .clipped()
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.black.opacity(0.8), lineWidth: 1))
+
+                        Button(action: {
+                            user.saveUserData() // İlgili değişiklikleri kaydetmek için buton ile fonksiyon çağrılır
+                        }) {
+                            Text("Save Weight")
+                                .background(RoundedRectangle(cornerRadius: 10).fill(Color(#colorLiteral(red: 0, green: 0.2473977804, blue: 0.4044402838, alpha: 1))))
+                                .frame(width: 140, height: 60)
+                                .foregroundStyle(Color.white)
+                                .font(.system(size: 25, weight: .light, design: .serif))
+                                .italic()
+                                .shadow(radius: 8)
+                        }
+                        .padding()
+
                         
                         Text("Daily Goal")
                             .font(.system(size: 25, weight: .light, design: .serif))
@@ -95,7 +122,7 @@ struct RegistrationView: View {
                 }
             }
             .padding(.top, -97)
-        }
+//        }
         
     }
     
