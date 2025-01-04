@@ -1,6 +1,6 @@
 //
 //  WaveView.swift
-//  WaterTracking
+//  Waterly
 //
 //  Created by Sena Çırak on 19.12.2024.
 //

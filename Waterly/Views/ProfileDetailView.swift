@@ -1,6 +1,6 @@
 //
 //  ProfileDetailView.swift
-//  WaterTracking2
+//  Waterly
 //
 //  Created by Sena Çırak on 30.12.2024.
 //

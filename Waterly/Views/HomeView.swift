@@ -1,6 +1,6 @@
 //
 //  HomeView.swift
-//  WaterTracking
+//  Waterly
 //
 //  Created by Sena Çırak on 16.12.2024.
 //

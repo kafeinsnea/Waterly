@@ -1,6 +1,6 @@
 //
 //  RegistrationView.swift
-//  WaterTracking
+//  Waterly
 //
 //  Created by Sena Çırak on 17.12.2024.
 //

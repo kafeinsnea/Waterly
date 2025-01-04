@@ -1,6 +1,6 @@
 //
 //  ButtonView.swift
-//  WaterTracking2
+//  Waterly
 //
 //  Created by Sena Çırak on 29.12.2024.
 //
