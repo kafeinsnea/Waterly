@@ -12,7 +12,7 @@ struct HomeView: View {
     
     @ObservedObject var user: UserModel
     @Environment(\.managedObjectContext) var viewContext
-    @State private var yuzde: Int = 0
+    
     @State private var isShowingAlert: Bool = false
     @State private var customAmount: String = ""
     
@@ -59,11 +59,11 @@ struct HomeView: View {
                 HStack {
                         ButtonView(title: "250 ml") {
                             user.addWater(amount: 250)
-                            updateProgress()
+                            user.updateProgress()
                         }
                         ButtonView(title: "500 ml") {
                                 user.addWater(amount: 500)
-                                updateProgress()
+                            user.updateProgress()
                         }
                 }
                 Button{
@@ -79,7 +79,7 @@ struct HomeView: View {
                     Button("Submit") {
                         if let amount = Double(customAmount) {
                             user.addWater(amount: amount)
-                            updateProgress()
+                            user.updateProgress()
                         }
                     }
                     Button("Cancel", role: .cancel) { }
@@ -103,12 +103,7 @@ struct HomeView: View {
     
     
     
-    func updateProgress() {
-        let progress = min(user.waterConsumed / user.dailyGoal, 1.0)
-        yuzde = Int(progress * 100)
-        user.progressPercentage = Int(yuzde)
-        user.saveUserData()
-    }
+  
     
 
     

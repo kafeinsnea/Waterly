@@ -49,13 +49,6 @@ class UserModel: ObservableObject {
         }
     }
     
-    // Su tüketimini kaydeder
-    func addWater(amount: Double) {
-        waterConsumed += amount
-        saveUserData()
-        addWaterRecord(amount: amount)
-    }
-    
     // Kullanıcı verilerini Core Data'ya kaydeder
     func saveUserData() {
         let request: NSFetchRequest<WaterGoal> = WaterGoal.fetchRequest()
@@ -86,7 +79,19 @@ class UserModel: ObservableObject {
         }
     }
     
-    
+    // Su tüketimini kaydeder
+    func addWater(amount: Double) {
+        waterConsumed += amount
+        saveUserData()
+        addWaterRecord(amount: amount)
+    }
+
+    func deleteRecord(_ record: WaterRecord){
+        guard let context = record.managedObjectContext else { return }
+        waterConsumed -= record.amount
+        context.delete(record)
+        saveUserData()
+    }
     // WaterRecord kaydı ekler
        func addWaterRecord(amount: Double) {
            let record = WaterRecord(context: context)
@@ -107,6 +112,12 @@ class UserModel: ObservableObject {
             lastUpdated = Date()
             saveUserData()
         }
+    }
+    
+    func updateProgress() {
+        let progress = min(waterConsumed / dailyGoal, 1.0)
+        progressPercentage = Int(progress * 100)
+        saveUserData()
     }
     
     func resetProgress() {

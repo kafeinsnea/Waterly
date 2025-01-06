@@ -12,6 +12,9 @@ struct DailyRecordsView: View {
     @ObservedObject var user: UserModel
    var filterDate: Date
     
+    @State private var selectedRecord: WaterRecord?
+    @State private var showDeleteConfirmation = false
+    
     var body: some View {
         let filteredRecords = user.fetchRecords(for: filterDate)
         ScrollView {
@@ -42,7 +45,8 @@ struct DailyRecordsView: View {
                             Spacer()
                             
                             Button{
-                                
+                                selectedRecord = record
+                                showDeleteConfirmation = true
                             }label:{
                                 Image(systemName: "ellipsis")
                                     .foregroundStyle(Color.white)
@@ -57,6 +61,16 @@ struct DailyRecordsView: View {
                 }
                 
             }
+        }
+        .confirmationDialog("Delete", isPresented: $showDeleteConfirmation) {
+            Button("delete", role:.destructive){
+                if let recordToDelete = selectedRecord{
+                    user.deleteRecord(recordToDelete)
+                    selectedRecord = nil
+                    user.updateProgress()
+                }
+            }
+           
         }
     
     }
