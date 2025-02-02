@@ -13,18 +13,25 @@ struct MainView: View {
     @ObservedObject var user: UserModel
     @Environment(\.managedObjectContext) private var viewContext
     @AppStorage("isRegistered") private var isRegistered: Bool = false
-    
+    @State private var tabSelection = 1
     var body: some View {
                 if isRegistered == true {
-                    TabView{
+                    TabView(selection: $tabSelection){
                         HomeView(user: user)
-                            .tabItem { Image(systemName: "house") }
+                            .tag(1)
+//                            .tabItem { Image(systemName: "house") }
                         WaveView(user: user)
-                            .tabItem { Image(systemName: "drop") }
-                        GraphicView(user: user)
-                            .tabItem { Image(systemName: "chart.xyaxis.line") }
+                            .tag(2)
+//                            .tabItem { Image(systemName: "drop") }
+                        GraphicView2(user: user)
+                            .tag(3)
+//                            .tabItem { Image(systemName: "chart.xyaxis.line") }
                         ProfileView(user:user)
-                            .tabItem { Image(systemName: "person") }
+                            .tag(4)
+//                            .tabItem { Image(systemName: "person") }
+                    }
+                    .overlay(alignment:.bottom){
+                        CustomTabView(tabSelection: $tabSelection)
                     }
                     .onAppear {
                         user.loadUserData()

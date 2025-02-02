@@ -16,8 +16,8 @@ class UserModel: ObservableObject {
     @Published var lastUpdated: Date = Date()
     @Published var gender: String = ""
     @Published var weight: Int = 0
-    @Published var wakeup: Date?
-    @Published var sleep: Date?
+    @Published var wakeup: Date = Date()
+    @Published var sleep: Date = Date()
     
     private let context: NSManagedObjectContext
     

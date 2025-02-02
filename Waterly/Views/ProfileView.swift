@@ -9,18 +9,18 @@ import SwiftUI
 
 struct ProfileView: View {
     
-    @ObservedObject var user: UserModel
+    @StateObject var user: UserModel
     @State private var showWakeupPicker: Bool = false
     @State private var showSleepPicker: Bool = false
     @State private var showGoalPicker: Bool = false
     @State private var showGenderPicker: Bool = false
     @State private var showWeightPicker: Bool = false
     @State private var selectedGender = ""
-    @State private var selectedWeight: Int 
-    init(user: UserModel) {
-          self.user = user
-          self._selectedWeight = State(initialValue: user.weight) // Başlangıçta user.weight'i al
-      }
+//    @State private var selectedWeight: Int
+    //    init(user: UserModel) {
+    //        self.user = user
+    //        self._selectedWeight = State(initialValue: user.weight) // Başlangıçta user.weight'i al
+    //    }
     let genders = ["Male", "Female"]
     
     var body: some View {
@@ -54,14 +54,14 @@ struct ProfileView: View {
                         Text("Select Weight")
                             .font(.headline)
                             .padding()
-                        Picker("Weight", selection: $selectedWeight) {
+                        Picker("Weight", selection: $user.weight) {
                             ForEach(30..<200, id: \.self) { weight in Text("\(weight) kg").tag(weight) }
                         }
                         .pickerStyle(.wheel)
                         .frame(maxWidth: .infinity)
                         .padding()
                         Button("Done") {
-                            user.weight = selectedWeight
+//                            user.weight = selectedWeight
                             user.saveUserData() // Core Data'ya kaydet
                             showWeightPicker = false
                         }
@@ -70,22 +70,41 @@ struct ProfileView: View {
                     .presentationDetents([.fraction(0.3)])
                 }
                 
-                ProfileDetailView(title: "Wake-up time", title2: user.gender)
-                ProfileDetailView(title: "Sleep time", title2: user.gender)
+                ProfileDetailView(title: "Wake-up time", title2: formattedDate(user.wakeup))
+                ProfileDetailView(title: "Sleep time", title2: formattedDate(user.sleep))
                 ProfileDetailView(title: "Goal", title2: String(user.dailyGoal))
             }
             .padding()
-            //            .navigationTitle("Profile Details")
             .toolbar {
-                ToolbarItem( placement: .topBarLeading) {
+                ToolbarItem(placement: .topBarLeading) {
                     Text("Profile Details")
                         .font(.system(size: 35, weight: .bold, design: .rounded))
                         .foregroundColor(.blue)
                         .padding(.top,78)
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button{
+                        
+                    }label: {
+                        Image(systemName: "gear")
+                            .font(.system(size: 22))
+                        
+                            .padding(.top,78)
+                    }
+                }
             }
+            
         }
     }
+
+    func formattedDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: date)
+    }
+
+    
+    
 }
 
 
