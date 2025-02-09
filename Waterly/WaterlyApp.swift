@@ -26,7 +26,7 @@ struct WaterlyApp: App {
                 MainView(user: user)
                     .environment(\.managedObjectContext,persistenceController.container.viewContext)
                      } else {
-                         RegistrationView(user:user) 
+                         HelloView(user:user) 
                              .environment(\.managedObjectContext, persistenceController.container.viewContext)
                      }
         }

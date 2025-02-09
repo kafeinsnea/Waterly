@@ -37,7 +37,7 @@ struct MainView: View {
                         user.loadUserData()
                     }
                 }else{
-                    RegistrationView(user: user)
+                    HelloView(user: user)
                 }
 
     }

@@ -6,41 +6,54 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct HelloView: View {
+    @ObservedObject var user: UserModel
+    @Environment(\.managedObjectContext) var viewContext
+    @State private var showQuestions = false
     var body: some View {
-       ZStack {
-           VStack {
-               Text("Track your daily water consumption, reach your goal and stay healthy!")
-                   .padding()
-                   .font(.largeTitle)
-                   .fontWeight(.bold)
-                   .offset(y:-40)
-               
-               Image("girl")
-                   .resizable()
-                   .scaledToFit()
-                   .clipShape(RoundedRectangle(cornerRadius: 20))
-                   .padding()
-                   .offset(y:-40)
-               
-            
-               Button{
-                   
-               }label: {
-                   Text("Continue")
-                       .font(.title2)
-                       .foregroundStyle(Color.white)
-                       .background(RoundedRectangle(cornerRadius: 25).fill(Color.black).frame(width: 320,height: 60))
-               }
-               .offset(y:20)
-           }
+        if showQuestions {
+            QuestionFlowView(user: user)
+        }else{
+            ZStack {
+                VStack {
+                    Text("Track your daily water consumption, reach your goal and stay healthy!")
+                        .padding()
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
+                        .offset(y:-40)
+                    
+                    Image("girl")
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .padding()
+                        .offset(y:-40)
+                    
+                    Button{
+                        withAnimation(.snappy(duration: 0.4)) {
+                            showQuestions = true
+                        }
+                       
+                    }label: {
+                        Text("Continue")
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .foregroundStyle(Color.white)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 50)
+                            .background(RoundedRectangle(cornerRadius: 25).fill(Color.black))
+                            .padding()
+
+                    }
+                    .offset(y:20)
+                }
+            }
+            .ignoresSafeArea(.all)
         }
-       .ignoresSafeArea(.all)
         
     }
 }
 
 #Preview {
-    HelloView()
+    HelloView(user: UserModel(context: PersistenceController.shared.container.viewContext))
 }
