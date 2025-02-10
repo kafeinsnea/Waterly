@@ -8,7 +8,14 @@
 import Foundation
 import CoreData
 
+enum sportLevel: String, CaseIterable {
+    case none = "none"
+    case light = "low"
+    case moderate = "moderate"
+    case intense = "intense"
+}
 class UserModel: ObservableObject {
+    
     @Published var username: String = ""
     @Published var dailyGoal: Double = 2000.0
     @Published var waterConsumed: Double = 0.0
@@ -18,7 +25,7 @@ class UserModel: ObservableObject {
     @Published var weight: Int = 0
     @Published var wakeup: Date = Date()
     @Published var sleep: Date = Date()
-    
+    @Published var sportLevel: String = "none"
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {

@@ -8,87 +8,7 @@
 import SwiftUI
 import CoreData
 
-//struct QuestionFlowView: View {
-//    @State private var selectedTab = 0
-//    
-//    var body: some View {
-//        VStack {
-//            // Üstteki Sekme Gösterimi
-//            HStack {
-//                ForEach(0..<4, id: \.self) { index in
-//                    Rectangle()
-//                        .fill(index == selectedTab ? Color.blue : Color.gray.opacity(0.3))
-//                        .frame(height: 4)
-//                        .animation(.easeInOut, value: selectedTab)
-//                }
-//            }
-//            .frame(maxWidth: .infinity)
-//            .padding(.horizontal)
-//
-//            // Seçili View'ı Göster
-//            TabView(selection: $selectedTab) {
-//                GenderQuestionView(selectedTab: $selectedTab).tag(0)
-//                NameQuestionView(selectedTab: $selectedTab).tag(1)
-//                SportQuestionView(selectedTab: $selectedTab).tag(2)
-//                WakeUpTimeQuestionView(selectedTab: $selectedTab).tag(3)
-//            }
-//            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-//        }
-////        .background(Color.black.ignoresSafeArea())
-//    }
-//}
-//
-//// 📌 1. Cinsiyet Sorusu View
-//struct GenderQuestionView: View {
-//    @Binding var selectedTab: Int
-//    @State private var selectedGender: String? = nil
-//
-//    var body: some View {
-//        VStack {
-//            Text("Gender?")
-//                .font(.largeTitle).bold()
-//
-//            HStack {
-//                ForEach(["Male", "Female"], id: \.self) { gender in
-//                    Button(action: { selectedGender = gender }) {
-//                        Text(gender)
-//                            .frame(maxWidth: .infinity)
-//                            .frame(height: 50)
-//                            .background(selectedGender == gender ? Color.blue : Color.gray)
-//                            .foregroundColor(.white)
-//                            .clipShape(RoundedRectangle(cornerRadius: 25))
-//                    }
-//                }
-//            }
-//            .padding()
-//
-//            ContinueButton(selectedTab: $selectedTab)
-//        }
-//    }
-//}
-//
-//// 📌 2. İsim Sorusu View
-//struct NameQuestionView: View {
-//    @Binding var selectedTab: Int
-//    @State private var name: String = ""
-//
-//    var body: some View {
-//        VStack {
-//            Text("What is your name?")
-//                .font(.largeTitle).bold().foregroundColor(.white)
-//
-//            TextField("Enter your name...", text: $name)
-//                .padding()
-//                .background(Color.white.opacity(0.2))
-//                .foregroundColor(.white)
-//                .clipShape(RoundedRectangle(cornerRadius: 10))
-//                .padding()
-//
-//            ContinueButton(selectedTab: $selectedTab)
-//        }
-//    }
-//}
-//
+
 //// 📌 3. Spor Seviyesi Sorusu View
 //struct SportQuestionView: View {
 //    @Binding var selectedTab: Int
@@ -114,46 +34,6 @@ import CoreData
 //        }
 //    }
 //}
-//
-//// 📌 4. Uyanma Zamanı Seçme View
-//struct WakeUpTimeQuestionView: View {
-//    @Binding var selectedTab: Int
-//    @State private var wakeUpTime = Date()
-//
-//    var body: some View {
-//        VStack {
-//            Text("What time do you wake up?")
-//                .font(.largeTitle).bold().foregroundColor(.white)
-//
-//            DatePicker("Select Time", selection: $wakeUpTime, displayedComponents: .hourAndMinute)
-//                .labelsHidden()
-//                .datePickerStyle(WheelDatePickerStyle())
-//                .foregroundColor(.white)
-//
-//            ContinueButton(selectedTab: $selectedTab, isLast: true)
-//        }
-//    }
-//}
-//
-//// 📌 Devam Butonu (Tüm View'larda Kullanılacak)
-//struct ContinueButton: View {
-//    @Binding var selectedTab: Int
-//    var isLast: Bool = false
-//
-//    var body: some View {
-//        Button(action: {
-//            if !isLast { selectedTab += 1 }
-//        }) {
-//            Text(isLast ? "Finish" : "Continue")
-//                .frame(maxWidth: .infinity)
-//                .frame(height: 50)
-//                .background(Color.white)
-//                .foregroundColor(.black)
-//                .clipShape(RoundedRectangle(cornerRadius: 25))
-//        }
-//        .padding()
-//    }
-//}
 
 enum Gender: String {
     case female, male
@@ -164,7 +44,7 @@ struct QuestionFlowView: View {
     var body: some View {
         VStack{
             HStack{
-                ForEach(0..<4, id: \.self) { index in
+                ForEach(0..<6, id: \.self) { index in
                     RoundedRectangle(cornerRadius: 10)
                         .fill(index == selectedTab ? Color.blue : Color.gray.opacity(0.5))
                         .frame(height:4)
@@ -178,7 +58,10 @@ struct QuestionFlowView: View {
                 NameQuestionView(user: user, selectedTab: $selectedTab).tag(0)
                 GenderQuestionView(selectedTab: $selectedTab, user: user).tag(1)
                 WeightQuestionView(user: user,selectedTab : $selectedTab).tag(2)
+                WakeUpQuestionView(selectedTab: $selectedTab, user: user).tag(3)
+                SleepQuestionView(selectedTab: $selectedTab, user: user).tag(4)
             }
+            .edgesIgnoringSafeArea(.all)
         }
         .padding()
     }
@@ -269,16 +152,141 @@ struct WeightQuestionView: View {
                 ForEach(30..<251, id: \.self) { weight in
                     Text("\(weight) kg").tag(weight)
                         .font(.system(size: 23, weight: .medium, design: .rounded))
-                        
                 }
             }
             .pickerStyle(.wheel)
             .frame(width: 300, height: 170)
+            .clipped()
+           
           
             Spacer()
             ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.weight == 0)
         }
     }
+}
+
+struct WakeUpQuestionView: View {
+    @Binding var selectedTab: Int
+    @ObservedObject var user: UserModel
+
+    @State private var selectedHour: Int = Calendar.current.component(.hour, from: Date())
+    @State private var selectedMin: Int = Calendar.current.component(.minute, from: Date())
+    var body: some View {
+            VStack {
+                Text("Wake up time?")
+                    .font(.system(size: 43, weight: .bold, design: .rounded))
+                    .padding(.top, 70)
+                
+                Text("\(formattedTime(user.wakeup))")
+                    .font(.system(size: 28, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color.blue)
+                    .padding(.top,30)
+                Spacer()
+                HStack {
+                    Picker("Hour", selection: $selectedHour) {
+                        ForEach(0..<24, id: \.self) { hour in
+                            Text("\(hour)").tag(hour)
+                                .font(.system(size: 23, weight: .medium, design: .rounded))
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(width: 150, height: 170)
+                    .clipped()
+                    .onChange(of: selectedHour) { updateWakeUpTime() }
+                    
+                    Text(":")
+                    .font(.system(size: 30, weight: .bold))
+                    
+                    Picker("Minute", selection: $selectedMin) {
+                        ForEach(0..<60, id: \.self) { minute in
+                            Text(String(format: "%02d", minute)).tag(minute)
+                                .font(.system(size: 23, weight: .medium,
+                                              design: .rounded))
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(width: 150, height: 170)
+                    .clipped()
+                    .onChange(of: selectedMin) { updateWakeUpTime() }
+                }
+                
+                Spacer()
+                ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.wakeup == Date.distantPast)
+            }
+    }
+    private func updateWakeUpTime() {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day], from: user.wakeup)
+        components.hour = selectedHour
+        components.minute = selectedMin
+
+        if let newDate = calendar.date(from: components) {
+            user.wakeup = newDate
+        }
+    }
+  
+}
+
+struct SleepQuestionView: View {
+    @Binding var selectedTab: Int
+    @ObservedObject var user: UserModel
+
+    @State private var selectedHour: Int = Calendar.current.component(.hour, from: Date())
+    @State private var selectedMin: Int = Calendar.current.component(.minute, from: Date())
+    var body: some View {
+            VStack {
+                Text("Sleep time?")
+                    .font(.system(size: 43, weight: .bold, design: .rounded))
+                    .padding(.top, 70)
+                
+                Text("\(formattedTime(user.sleep))")
+                    .font(.system(size: 28, weight: .medium, design: .rounded))
+                    .foregroundStyle(Color.blue)
+                    .padding(.top,30)
+                Spacer()
+                HStack {
+                    Picker("Hour", selection: $selectedHour) {
+                        ForEach(0..<24, id: \.self) { hour in
+                            Text("\(hour)").tag(hour)
+                                .font(.system(size: 23, weight: .medium, design: .rounded))
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(width: 150, height: 170)
+                    .clipped()
+                    .onChange(of: selectedHour) { updateSleepTime() }
+                    
+                    Text(":")
+                    .font(.system(size: 30, weight: .bold))
+                    
+                    Picker("Minute", selection: $selectedMin) {
+                        ForEach(0..<60, id: \.self) { minute in
+                            Text(String(format: "%02d", minute)).tag(minute)
+                                .font(.system(size: 23, weight: .medium,
+                                              design: .rounded))
+                        }
+                    }
+                    .pickerStyle(.wheel)
+                    .frame(width: 150, height: 170)
+                    .clipped()
+                    .onChange(of: selectedMin) { updateSleepTime() }
+                }
+                
+                Spacer()
+                ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.wakeup == Date.distantPast)
+            }
+    }
+    private func updateSleepTime() {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day], from: user.sleep)
+        components.hour = selectedHour
+        components.minute = selectedMin
+
+        if let newDate = calendar.date(from: components) {
+            user.sleep = newDate
+        }
+    }
+  
 }
 
 struct ContinueButton: View {
@@ -305,6 +313,12 @@ struct ContinueButton: View {
     }
 }
 
+
+ func formattedTime(_ date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "HH:mm"
+    return formatter.string(from: date)
+}
 
 #Preview {
     QuestionFlowView(user: UserModel(context: PersistenceController.shared.container.viewContext))
