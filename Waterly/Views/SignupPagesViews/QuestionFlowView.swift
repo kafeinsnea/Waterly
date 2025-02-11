@@ -8,33 +8,6 @@
 import SwiftUI
 import CoreData
 
-
-//// 📌 3. Spor Seviyesi Sorusu View
-//struct SportQuestionView: View {
-//    @Binding var selectedTab: Int
-//    @State private var selectedSport: String? = nil
-//
-//    var body: some View {
-//        VStack {
-//            Text("How often do you exercise?")
-//                .font(.largeTitle).bold().foregroundColor(.white)
-//
-//            ForEach(["Rarely", "Moderate", "Intense"], id: \.self) { level in
-//                Button(action: { selectedSport = level }) {
-//                    Text(level)
-//                        .frame(maxWidth: .infinity)
-//                        .frame(height: 50)
-//                        .background(selectedSport == level ? Color.blue : Color.gray)
-//                        .foregroundColor(.white)
-//                        .clipShape(RoundedRectangle(cornerRadius: 25))
-//                }
-//            }
-//
-//            ContinueButton(selectedTab: $selectedTab)
-//        }
-//    }
-//}
-
 enum Gender: String {
     case female, male
 }
@@ -49,24 +22,23 @@ struct QuestionFlowView: View {
                         .fill(index == selectedTab ? Color.blue : Color.gray.opacity(0.5))
                         .frame(height:4)
                 }
-
-                
             }
             .padding(.horizontal)
             
             TabView(selection: $selectedTab) {
-                NameQuestionView(user: user, selectedTab: $selectedTab).tag(0)
-                GenderQuestionView(selectedTab: $selectedTab, user: user).tag(1)
-                WeightQuestionView(user: user,selectedTab : $selectedTab).tag(2)
-                WakeUpQuestionView(selectedTab: $selectedTab, user: user).tag(3)
-                SleepQuestionView(selectedTab: $selectedTab, user: user).tag(4)
+                NameQuestionView(user: user, selectedTab: $selectedTab).tag(0).contentShape(Rectangle()).gesture(DragGesture())
+                GenderQuestionView(selectedTab: $selectedTab, user: user).tag(1).contentShape(Rectangle()).gesture(DragGesture())
+                WeightQuestionView(user: user,selectedTab : $selectedTab).tag(2).contentShape(Rectangle()).gesture(DragGesture())
+                WakeUpQuestionView(selectedTab: $selectedTab, user: user).tag(3).contentShape(Rectangle()).gesture(DragGesture())
+                SleepQuestionView(selectedTab: $selectedTab, user: user).tag(4).contentShape(Rectangle()).gesture(DragGesture())
+                SportQuestionView(user: user, selectedTab: $selectedTab).tag(5).contentShape(Rectangle()).gesture(DragGesture())
             }
-            .edgesIgnoringSafeArea(.all)
         }
-        .padding()
+        .tabViewStyle(.page(indexDisplayMode: .never))
+        .animation(.easeInOut(duration: 0.3), value: selectedTab)
     }
 }
-
+    
 struct NameQuestionView: View {
     @ObservedObject var user: UserModel
     @Binding var selectedTab: Int
@@ -147,7 +119,7 @@ struct WeightQuestionView: View {
                 .font(.system(size: 28, weight: .medium, design: .rounded))
                 .foregroundStyle(Color.blue)
                 .padding(.top,30)
-            Spacer()
+           
             Picker("Select Weight", selection: $user.weight) {
                 ForEach(30..<251, id: \.self) { weight in
                     Text("\(weight) kg").tag(weight)
@@ -157,9 +129,8 @@ struct WeightQuestionView: View {
             .pickerStyle(.wheel)
             .frame(width: 300, height: 170)
             .clipped()
-           
+            
           
-            Spacer()
             ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.weight == 0)
         }
     }
@@ -181,7 +152,6 @@ struct WakeUpQuestionView: View {
                     .font(.system(size: 28, weight: .medium, design: .rounded))
                     .foregroundStyle(Color.blue)
                     .padding(.top,30)
-                Spacer()
                 HStack {
                     Picker("Hour", selection: $selectedHour) {
                         ForEach(0..<24, id: \.self) { hour in
@@ -289,6 +259,41 @@ struct SleepQuestionView: View {
   
 }
 
+struct SportQuestionView: View {
+    @ObservedObject var user: UserModel
+    @Binding var selectedTab: Int
+
+    var body: some View {
+        VStack {
+            Text("How often do you exercise?")
+                .font(.system(size: 43, weight: .bold, design: .rounded))
+                .padding(.top, 70)
+
+            VStack(spacing: 20) {
+                ForEach(sportLevel.allCases, id: \.self) { level in
+                    Button {
+                        user.sportLevel = level.rawValue
+                    } label: {
+                        Text(level.rawValue)
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 60)
+                            .background(user.sportLevel == level.rawValue ? Color.blue : Color.gray.opacity(0.3))
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 25))
+                    }
+                }
+            }
+            .padding(.horizontal)
+
+            Spacer()
+            BackButton(selectedTab: $selectedTab)
+            ContinueButton(user: user, selectedTab: $selectedTab, isLast: true)
+        }
+    }
+}
+
 struct ContinueButton: View {
     @ObservedObject var user: UserModel
     @Binding var selectedTab: Int
@@ -310,6 +315,23 @@ struct ContinueButton: View {
               
         }
         .disabled(isDisabled)
+    }
+}
+
+struct BackButton: View {
+    @Binding var selectedTab: Int
+    
+    var body: some View {
+        Button {
+            selectedTab -= 1
+        } label: {
+            Text("Back")
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .foregroundStyle(Color.white)
+                .frame(width: 100, height: 60)
+                .background(RoundedRectangle(cornerRadius: 25).fill(Color.black))
+                .shadow(radius: 9)
+        }
     }
 }
 
