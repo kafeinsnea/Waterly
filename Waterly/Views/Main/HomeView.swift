@@ -13,100 +13,112 @@ struct HomeView: View {
     @ObservedObject var user: UserModel
     @Environment(\.managedObjectContext) var viewContext
     
-    @State private var isShowingAlert: Bool = false
-    @State private var customAmount: String = ""
+    //    @State private var isShowingAlert: Bool = false
+    //    @State private var customAmount: String = ""
     
+    var progress: CGFloat {
+        return min(user.waterConsumed / user.dailyGoal, 1.0) // %100'ü geçmesin
+    }
     var body: some View {
-//        NavigationStack{
-            VStack(spacing:27) {
-                VStack {
-                    Text("Daily Target")
-                    Text("\(Int(user.dailyGoal)) ml")
-                }
-                .font(.system(size: 20, weight: .bold, design: .rounded))
-                .padding(.top,20)
-                ZStack {
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 235,height: 235)
-                        .shadow(color: .blue.opacity(0.5), radius: 25)
+        NavigationStack{
+            VStack{
+                NavigationLink(destination: AddingView(user:user)) {
+                    ZStack {
+                        Circle()
+                            .stroke(Color.gray.opacity(0.5), lineWidth: 11)
                         
-                    Circle()
-                        .stroke(lineWidth: 20)
-                        .foregroundColor(Color.blue.opacity(0.3))
-                        .frame(width: 170,height: 170)
+                        // Dolu Kısım (Progress)
+                        Circle()
+                            .trim(from: 0.0, to: progress)
+                            .stroke(
+                                Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)),
+                                style: StrokeStyle(lineWidth: 11, lineCap: .round)
+                            )
+                            .rotationEffect(.degrees(-90)) // Yukarıdan başlasın
+                            .animation(.easeInOut(duration: 0.5), value: progress)
                         
-                    Circle()
-                        .trim(from: 0.0, to: CGFloat(user.progressPercentage) / 100.0)
-                        .stroke(
-                            AngularGradient(gradient: Gradient(colors: [Color.blue, Color.blue]),center: .center),
-                            style: StrokeStyle(lineWidth: 20, lineCap: .round)
-                        )
-                        .rotationEffect(.degrees(-90))
-                        .animation(.easeInOut(duration: 0.5), value: user.progressPercentage)
-                        .frame(width: 170,height: 170)
-                    
-                    VStack {
                         Text("\(user.progressPercentage)%")
                             .font(.system(size: 30, weight: .bold, design: .rounded))
                             .italic()
-                            .foregroundStyle(Color.pink)
+                            .foregroundStyle(Color(#colorLiteral(red: 0.2038662732, green: 0.1776102781, blue: 0.2745614052, alpha: 1)))
                         
-                        Text("\(Int(user.waterConsumed)) ml Drunk")
+                        
                     }
+                    .frame(width: 120, height: 120)
+                    .padding()
+                    
+                    Text("Today's Progress")
+                        .font(.system(size: 25, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color(#colorLiteral(red: 0.2038662732, green: 0.1776102781, blue: 0.2745614052, alpha: 1)))
+                        .padding()
                 }
-               
-                HStack {
-                        ButtonView(title: "250 ml") {
-                            user.addWater(amount: 250)
-                            user.updateProgress()
-                        }
-                        ButtonView(title: "500 ml") {
-                                user.addWater(amount: 500)
-                            user.updateProgress()
-                        }
-                }
-                Button{
-                    isShowingAlert = true
-                }label: {
-                    Image(systemName: "plus")
-                        .foregroundStyle(Color.white)
-                        .background(Circle().foregroundColor(Color.blue).frame(width: 50, height: 50))
-                }
-                .alert("Enter Custom Amount", isPresented: $isShowingAlert) {
-                    TextField("ml", text: $customAmount)
-                        .keyboardType(.numberPad)
-                    Button("Submit") {
-                        if let amount = Double(customAmount) {
-                            user.addWater(amount: amount)
-                            user.updateProgress()
-                        }
-                    }
-                    Button("Cancel", role: .cancel) { }
-                }
-               
-                Button( "Reset Progress") {
-                    user.resetProgress()
-                }
+                .padding()
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .frame(width: 370, height: 150)
+                        .shadow(radius: 10)
+                        .foregroundStyle(Color(#colorLiteral(red: 0.7819901109, green: 0.751116097, blue: 0.8376366496, alpha: 1)))
+                )
                 
-                DailyRecordsView(user:user, filterDate: Date())
-//                Spacer()
+                HStack{
+                    ZStack(alignment: .topLeading)  {
+                        RoundedRectangle(cornerRadius: 20)
+                            .frame(width: 180,height: 150)
+                            .foregroundStyle(Color.white)
+                            .shadow(radius: 10)
+                        
+                        VStack{
+                            Text("Daily Goal")
+                                .font(.system(size: 20, weight: .bold, design: .rounded))
+                                .padding()
+                        }
+                        
+                        
+                    }
+                    ZStack(alignment: .topLeading) {
+                        RoundedRectangle(cornerRadius: 20)
+                            .frame(width: 180,height: 150)
+                            .foregroundStyle(Color.white)
+                            .shadow(radius: 10)
+                        
+                        
+                        Text("Water intake")
+                            .font(.system(size: 20, weight: .bold, design: .rounded))
+                            .padding()
+                        
+                        VStack {
+                            HStack {
+                                Text("\(Decimal(user.waterConsumed/1000)) of \(Decimal(user.dailyGoal/1000))")
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                Text("Liters")
+                                    .font(.system(size: 17, weight: .regular, design: .rounded))
+                            }
+                            ProgressView(value: progress)
+                                .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                                .frame(height: 10)
+                                .padding(.horizontal)
+                        }
+                        .padding(.top)
+                        .offset(x:0, y: 45)
+                        
+                        
+                    }
+                    
+                }.padding(.horizontal)
+                
             }
-           
-//            .navigationTitle("Hello, \(user.username)")
-//        }
-        
-       
+            .toolbar{
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Hello, \(user.username) 👋")
+                        .font(.system(size: 35, weight: .bold, design: .rounded))
+                        .padding(.top,20)
+                        .padding()
+                }
+            }
+            
+        }
         
     }
-       
-    
-    
-    
-  
-    
-
-    
 }
 
 #Preview {
