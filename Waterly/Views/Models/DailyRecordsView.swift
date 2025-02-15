@@ -18,19 +18,19 @@ struct DailyRecordsView: View {
     var body: some View {
         let filteredRecords = user.fetchRecords(for: filterDate)
         ScrollView {
-            VStack(spacing: -15){
+            VStack(spacing: -35){
                 ForEach(filteredRecords, id: \.self){ record in
                     ZStack {
                         
-                        RoundedRectangle(cornerRadius: 15)
-                            .frame(width: 350, height: 70)
-                            .foregroundStyle(Color.blue)
+//                        RoundedRectangle(cornerRadius: 15)
+//                            .frame(width: 350, height: 70)
+//                            .foregroundStyle(Color.blue)
                         
                         HStack {
                             
-                            Image(systemName: "mug")
-                                .font(.title)
-                                .foregroundStyle(Color.white)
+                            Image(systemName: "drop")
+                                .font(.title2)
+//                                .foregroundStyle(Color.white)
                             
                             VStack(alignment:.leading){
                                 
@@ -39,9 +39,8 @@ struct DailyRecordsView: View {
                                 Text(record.date?.formatted(date:.omitted, time: .shortened) ?? "unknown time")
                                     .font(.system(size: 15, weight: .bold, design: .rounded))
                             }
-                            
                             .padding()
-                            .foregroundStyle(Color.white)
+//                            .foregroundStyle(Color.white)
                             Spacer()
                             
                             Button{
@@ -49,12 +48,12 @@ struct DailyRecordsView: View {
                                 showDeleteConfirmation = true
                             }label:{
                                 Image(systemName: "ellipsis")
-                                    .foregroundStyle(Color.white)
-                                    .font(.title)
+                                    .foregroundStyle(Color.black)
+                                    .font(.title2)
                             }
                            
                         }
-                        .padding(.horizontal,50)
+//                        .padding(.horizontal,10)
                        
                     }
                     .padding()
@@ -63,7 +62,7 @@ struct DailyRecordsView: View {
             }
         }
         .confirmationDialog("Delete", isPresented: $showDeleteConfirmation) {
-            Button("delete", role:.destructive){
+            Button("Delete", role:.destructive){
                 if let recordToDelete = selectedRecord{
                     user.deleteRecord(recordToDelete)
                     selectedRecord = nil

@@ -20,7 +20,7 @@ struct MainView: View {
                         HomeView(user: user)
                             .tag(1)
 //                            .tabItem { Image(systemName: "house") }
-                        WaveView(user: user)
+                        AddingView(user: user)
                             .tag(2)
 //                            .tabItem { Image(systemName: "drop") }
                         GraphicView2(user: user)
@@ -28,7 +28,10 @@ struct MainView: View {
 //                            .tabItem { Image(systemName: "chart.xyaxis.line") }
                         ProfileView(user:user)
                             .tag(4)
-//                            .tabItem { Image(systemName: "person") }
+//                            .tabItem {
+//                                Image(systemName: "person")
+//                                
+//                            }
                     }
                     .overlay(alignment:.bottom){
                         CustomTabView(tabSelection: $tabSelection)

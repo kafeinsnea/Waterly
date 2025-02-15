@@ -20,10 +20,10 @@ struct CustomTabView: View {
     
     var body: some View {
         ZStack{
-            Capsule()
-                .frame(height: 75)
-                .foregroundColor(Color.white)
-                .shadow(radius: 2)
+//            RoundedRectangle(cornerRadius: 5)
+//                .frame(height: 75)
+//                .foregroundColor(Color.white)
+//                .shadow(radius: 2)
             HStack{
                 ForEach(0..<4){ index in
                     Button{
@@ -33,21 +33,24 @@ struct CustomTabView: View {
                     } label: {
                         VStack(spacing:8){
                             Spacer()
-                            
-                            Image(systemName: tabBarItems[index])
-                                .font(.title)
-                            
-                            if index + 1 == tabSelection{
-                                Capsule()
-                                    .frame(height:8)
-                                    .foregroundStyle(Color.blue)
-                                    .matchedGeometryEffect(id: "selectedTabId", in: animationNamespace)
-                                    .offset(y:3)
-                            }else{
-                                Capsule()
-                                    .frame(height:8)
-                                    .foregroundStyle(Color.clear)
-                                    .offset(y:3)
+                            ZStack {
+                                if index + 1 == tabSelection{
+                                    
+                                    RoundedRectangle(cornerRadius: 15)
+                                        .frame(width: 60, height: 60)
+                                        .foregroundStyle(Color.blue.opacity(0.5))
+                                        .matchedGeometryEffect(id: "selectedTabId", in: animationNamespace)
+                                        .offset(y:3)
+                                    
+                                }else{
+                                    Capsule()
+                                        .frame(height:8)
+                                        .foregroundStyle(Color.clear)
+                                        .offset(y:3)
+                                }
+                                Image(systemName: tabBarItems[index])
+                                    .font(.title2)
+                                    .foregroundStyle(Color.black)
                             }
                         }
                         .foregroundStyle(index + 1 == tabSelection ? Color.blue : Color.gray)
@@ -56,8 +59,8 @@ struct CustomTabView: View {
                     
                 }
             }
-            .frame(height: 80)
-            .clipShape(Capsule())
+            .frame(height: 75)
+//            .clipShape(RoundedRectangle())
         }
         .padding(.horizontal)
     }

@@ -14,30 +14,36 @@ enum Gender: String {
 struct QuestionFlowView: View {
     @ObservedObject var user: UserModel
     @State private var selectedTab: Int = 0
+    @AppStorage("isRegistered") private var isRegistered: Bool = false
+
     var body: some View {
-        VStack{
-            HStack{
-                ForEach(0..<6, id: \.self) { index in
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(index == selectedTab ? Color.blue : Color.gray.opacity(0.5))
-                        .frame(height:4)
+//        if isRegistered {
+//            MainView(user: user)
+//        }else{
+            VStack{
+                HStack{
+                    ForEach(0..<6, id: \.self) { index in
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(index == selectedTab ? Color.blue : Color.gray.opacity(0.5))
+                            .frame(height:4)
+                    }
+                }
+                .padding(.horizontal)
+                
+                TabView(selection: $selectedTab) {
+                    NameQuestionView(user: user, selectedTab: $selectedTab).tag(0).contentShape(Rectangle()).gesture(DragGesture())
+                    GenderQuestionView(selectedTab: $selectedTab, user: user).tag(1).contentShape(Rectangle()).gesture(DragGesture())
+                    WeightQuestionView(user: user,selectedTab : $selectedTab).tag(2).contentShape(Rectangle()).gesture(DragGesture())
+                    WakeUpQuestionView(selectedTab: $selectedTab, user: user).tag(3).contentShape(Rectangle()).gesture(DragGesture())
+                    SleepQuestionView(selectedTab: $selectedTab, user: user).tag(4).contentShape(Rectangle()).gesture(DragGesture())
+                    SportQuestionView(user: user, selectedTab: $selectedTab).tag(5).contentShape(Rectangle()).gesture(DragGesture())
                 }
             }
-            .padding(.horizontal)
-            
-            TabView(selection: $selectedTab) {
-                NameQuestionView(user: user, selectedTab: $selectedTab).tag(0).contentShape(Rectangle()).gesture(DragGesture())
-                GenderQuestionView(selectedTab: $selectedTab, user: user).tag(1).contentShape(Rectangle()).gesture(DragGesture())
-                WeightQuestionView(user: user,selectedTab : $selectedTab).tag(2).contentShape(Rectangle()).gesture(DragGesture())
-                WakeUpQuestionView(selectedTab: $selectedTab, user: user).tag(3).contentShape(Rectangle()).gesture(DragGesture())
-                SleepQuestionView(selectedTab: $selectedTab, user: user).tag(4).contentShape(Rectangle()).gesture(DragGesture())
-                SportQuestionView(user: user, selectedTab: $selectedTab).tag(5).contentShape(Rectangle()).gesture(DragGesture())
-            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .animation(.easeInOut(duration: 0.3), value: selectedTab)
         }
-        .tabViewStyle(.page(indexDisplayMode: .never))
-        .animation(.easeInOut(duration: 0.3), value: selectedTab)
     }
-}
+//}
     
 struct NameQuestionView: View {
     @ObservedObject var user: UserModel
@@ -262,7 +268,7 @@ struct SleepQuestionView: View {
 struct SportQuestionView: View {
     @ObservedObject var user: UserModel
     @Binding var selectedTab: Int
-
+    var isLast: Bool = false
     var body: some View {
         VStack {
             Text("How often do you exercise?")
@@ -289,22 +295,21 @@ struct SportQuestionView: View {
 
             Spacer()
             BackButton(selectedTab: $selectedTab)
-            ContinueButton(user: user, selectedTab: $selectedTab, isLast: true)
+            FinishButton(user: user)
         }
     }
 }
-
-struct ContinueButton: View {
+struct FinishButton: View {
     @ObservedObject var user: UserModel
-    @Binding var selectedTab: Int
-    var isLast: Bool = false
     var isDisabled: Bool = false
+    @AppStorage("isRegistered") private var isRegistered: Bool = false
     var body: some View {
         Button{
-            if !isLast { selectedTab += 1 }
             user.saveUserData()
-        }label: {
-            Text(isLast ? "Finish" : "Continue")
+            withAnimation(.snappy(duration: 0.4)) {
+                isRegistered = true
+            }        }label: {
+            Text("Finish")
                 .font(.system(size: 20, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)
@@ -315,6 +320,31 @@ struct ContinueButton: View {
               
         }
         .disabled(isDisabled)
+    }
+}
+struct ContinueButton: View {
+    @ObservedObject var user: UserModel
+    @Binding var selectedTab: Int
+    var isLast: Bool = false
+    var isDisabled: Bool = false
+    
+    var body: some View {
+        Button{
+            if !isLast { selectedTab += 1 }
+            user.saveUserData()
+        }label: {
+            Text("Continue")
+                .font(.system(size: 20, weight: .bold, design: .rounded))
+                .foregroundStyle(Color.white)
+                .frame(maxWidth: .infinity)
+                .frame(height: 60)
+                .background(RoundedRectangle(cornerRadius: 25).fill(isDisabled ? Color.gray :  Color.black))
+                .padding()
+                .shadow(radius: 9)
+              
+        }
+        .disabled(isDisabled)
+      
     }
 }
 

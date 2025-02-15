@@ -87,20 +87,13 @@ struct AddingView: View {
                             user.resetProgress()
                         }
         
-                        DailyRecordsView(user:user, filterDate: Date())
+//                        DailyRecordsView(user:user, filterDate: Date())
         //                Spacer()
                     }
         
         //            .navigationTitle("Hello, \(user.username)")
         //        }
-        
-        
-        
             }
-        
-        
-        
-        
     }
 }
 
