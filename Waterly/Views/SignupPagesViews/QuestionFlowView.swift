@@ -308,7 +308,8 @@ struct FinishButton: View {
             user.saveUserData()
             withAnimation(.snappy(duration: 0.4)) {
                 isRegistered = true
-            }        }label: {
+            }
+        }label: {
             Text("Finish")
                 .font(.system(size: 20, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)

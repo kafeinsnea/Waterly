@@ -28,16 +28,17 @@ struct DailyRecordsView: View {
                         
                         HStack {
                             
-                            Image(systemName: "drop")
+                            Image(systemName: "drop.fill")
                                 .font(.title2)
-//                                .foregroundStyle(Color.white)
+                                .bold()
+                                .foregroundStyle(Color(#colorLiteral(red: 0.3527679443, green: 0.6399899125, blue: 0.9096029401, alpha: 1)))
                             
                             VStack(alignment:.leading){
                                 
                                 Text("\(Int(record.amount)) ml")
-                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .font(.system(size: 21, weight: .bold, design: .rounded))
                                 Text(record.date?.formatted(date:.omitted, time: .shortened) ?? "unknown time")
-                                    .font(.system(size: 15, weight: .bold, design: .rounded))
+                                    .font(.system(size: 16, weight: .medium, design: .rounded))
                             }
                             .padding()
 //                            .foregroundStyle(Color.white)

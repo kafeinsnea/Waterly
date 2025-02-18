@@ -93,6 +93,13 @@ class UserModel: ObservableObject {
         addWaterRecord(amount: amount)
     }
 
+    func removeLastAddedWater() {
+          let records = fetchRecords(for: Date())
+          
+          guard let lastRecord = records.last else { return }
+          deleteRecord(lastRecord)
+      }
+    
     func deleteRecord(_ record: WaterRecord){
         guard let context = record.managedObjectContext else { return }
         waterConsumed -= record.amount
