@@ -38,7 +38,7 @@ struct HomeView: View {
                                     Circle()
                                         .trim(from: 0.0, to: progress)
                                         .stroke(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)),style: StrokeStyle(lineWidth: 11, lineCap: .round))
-                                        .rotationEffect(.degrees(-90)) // Yukarıdan başlasın
+                                        .rotationEffect(.degrees(-90))
                                         .animation(.easeInOut(duration: 0.5), value: progress)
                                     Text("\(user.progressPercentage)%")
                                         .font(.system(size: 30, weight: .bold, design: .rounded))
@@ -78,9 +78,6 @@ struct HomeView: View {
                             }
                             .padding()
                             
-                            
-                            
-                            
                         }
                         ZStack(alignment: .topLeading) {
                             RoundedRectangle(cornerRadius: 20)
@@ -106,22 +103,10 @@ struct HomeView: View {
                                     .padding()
                                 
                             }
-                            .padding(.top, 80)                    }
-                        
+                            .padding(.top, 80)
+                        }
                     }
                     .padding(.horizontal)
-                    
-//                    VStack(alignment: .leading,spacing: -9) {
-//                        Text("Today's Records")
-//                            .font(.system(size: 25, weight: .bold, design: .rounded))
-//                            .foregroundStyle(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)))
-//                        
-////                        
-////                        DailyRecordsView(user: user, filterDate: Date())
-////                            .padding(.top, 17)
-//                        
-//                    }
-//                    .padding(.top, 40)
                     
                     VStack(spacing: -8) {
                         Text("Today's Records")

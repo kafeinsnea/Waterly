@@ -9,8 +9,9 @@
 import SwiftUI
 
 struct ButtonView: View {
-    let title: String
-    let action: (Int) -> Void
+    @ObservedObject var user: UserModel
+    @Environment(\.managedObjectContext) var viewContext
+    
     let cupSizes: [Int] = [150, 250, 350, 500, 1000]
 
     @State private var pressedSize: Int? = nil
@@ -19,13 +20,15 @@ struct ButtonView: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 20) {
                 ForEach(cupSizes, id: \.self) { size in
-                    Button(action: {
+                    Button {
                         pressedSize  = size
-                        action(size)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                             pressedSize = nil
                         }
-                    }) {
+                        user.addWater(amount: Double(size))
+                        user.saveUserData()
+                        user.updateProgress()
+                    } label:{
                         VStack {
                             getCupIcon(for: size)
                                 .resizable()
@@ -66,7 +69,5 @@ struct ButtonView: View {
 }
 
 #Preview {
-    ButtonView(title: "250 mL") { size in
-        print("Seçilen: \(size) mL")
-    }
+    ButtonView(user: UserModel(context: PersistenceController.shared.container.viewContext))
 }

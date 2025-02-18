@@ -41,8 +41,9 @@ struct AddingView: View {
                     }label: {
                         Image(systemName: "minus")
                             .foregroundStyle(Color.white)
-                            .background(Circle().fill(Color.red).frame(width: 50,height: 50))
+                            .background(Circle().fill(Color.red).frame(width: 45,height: 45))
                     }
+                    .padding(30)
                
 //
 //                                                        Button( "Reset Progress") {
@@ -50,36 +51,14 @@ struct AddingView: View {
 //                                                        }
                 }
             }
-            
-            //                ButtonView(title: "250 ml") {
-            //                    user.addWater(amount: 250)
-            //                    user.updateProgress()
-            //                }
-            //                Button{
-            //                    isSheetPresented = true
-            //                }label: {
-            //                    Image(systemName: "plus")
-            //                        .foregroundStyle(Color.red)
-            //                        .background(Circle().stroke(style: StrokeStyle(lineWidth: 3)).foregroundColor(Color.blue).frame(width: 50, height: 50))
-            //                }
-            //                .sheet(isPresented: $isSheetPresented) {
-            //                    SwitchCupView(user: user, selectedCupSize: $selectedCupSize)
-            //                        .presentationDetents([.medium, .large])
-            //                        .presentationDragIndicator(.visible)
-            ////                        .interactiveDismissDisabled()
-            //                }
-            
-           
                 Text("Add Water")
                     .font(.system(size: 22, weight: .bold, design: .rounded))
                     .frame(maxWidth: .infinity,alignment: .leading)
                     .padding(.top,17)
                     .padding(.horizontal,25)
           
-                        ButtonView(title: "250 ml") {_ in 
-                            user.addWater(amount: 250)
-                            user.updateProgress()
-                        }
+            ButtonView(user: user)
+                
         }
     }
 }
