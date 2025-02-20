@@ -8,108 +8,186 @@
 import SwiftUI
 
 struct ProfileView: View {
-    
-    @StateObject var user: UserModel
-    @State private var showWakeupPicker: Bool = false
-    @State private var showSleepPicker: Bool = false
-    @State private var showGoalPicker: Bool = false
-    @State private var showGenderPicker: Bool = false
-    @State private var showWeightPicker: Bool = false
-    @State private var selectedGender = ""
-//    @State private var selectedWeight: Int
-    //    init(user: UserModel) {
-    //        self.user = user
-    //        self._selectedWeight = State(initialValue: user.weight) // Başlangıçta user.weight'i al
-    //    }
-    let genders = ["Male", "Female"]
-    
+    @ObservedObject var user: UserModel
+    @State private var isEditing = false
     var body: some View {
-        NavigationStack {
-            VStack{
-                Image(systemName: "mug")
-                    .resizable()
-                    .frame(width: 100, height: 100)
-                ProfileDetailView(title: "Gender", title2: user.gender){
-                    self.showGenderPicker = true
-                }
-                .confirmationDialog(
-                    "Select Gender",
-                    isPresented: $showGenderPicker,
-                    titleVisibility: .visible
-                ) {
-                    ForEach(genders, id: \.self) { gender in
-                        Button(gender) {
-                            user.gender = gender
-                            user.saveUserData()
-                        }
+        NavigationStack{
+            VStack {
+                HStack{
+                    Image(user.gender == "male" ? "male" : "female")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 90,height: 90)
+                    Text("\(user.username)")
+                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                    Spacer()
+                    
+                    Button {
+                        isEditing.toggle()
+                    } label: {
+                        Image(systemName: "pencil.line")
+                            .resizable()
+                            .frame(width: 24,height: 24)
                     }
-                    Button("Cancel", role: .cancel) {}
+                    .sheet(isPresented: $isEditing) {
+                        ProfileEditView(user: user)
+                    }
                 }
+                .padding(.horizontal)
                 
-                ProfileDetailView(title: "Weight", title2: "\(user.weight) kg"){
-                    showWeightPicker = true
-                }
-                .sheet(isPresented: $showWeightPicker){
-                    VStack {
-                        Text("Select Weight")
-                            .font(.headline)
-                            .padding()
-                        Picker("Weight", selection: $user.weight) {
-                            ForEach(30..<200, id: \.self) { weight in Text("\(weight) kg").tag(weight) }
-                        }
-                        .pickerStyle(.wheel)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        Button("Done") {
-//                            user.weight = selectedWeight
-                            user.saveUserData() // Core Data'ya kaydet
-                            showWeightPicker = false
-                        }
-                        .padding()
-                    }
-                    .presentationDetents([.fraction(0.3)])
-                }
                 
-                ProfileDetailView(title: "Wake-up time", title2: formattedDate(user.wakeup))
-                ProfileDetailView(title: "Sleep time", title2: formattedDate(user.sleep))
-                ProfileDetailView(title: "Goal", title2: String(user.dailyGoal))
-            }
-            .padding()
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Text("Profile Details")
-                        .font(.system(size: 35, weight: .bold, design: .rounded))
-                        .foregroundColor(.blue)
-                        .padding(.top,78)
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button{
-                        
-                    }label: {
-                        Image(systemName: "gear")
-                            .font(.system(size: 22))
-                        
-                            .padding(.top,78)
-                    }
-                }
-            }
-            
-        }
-    }
+                VStack(spacing:15){
+                    ProfileInfoCard(title: "Gender", value: user.gender)
+                    ProfileInfoCard(title: "Weight", value: "\(String(user.weight)) kg")
+                    ProfileInfoCard(title: "Wake-up time", value: timeFormatter(user.wakeup))
+                    ProfileInfoCard(title: "Sleep time", value: timeFormatter(user.sleep))
+                    ProfileInfoCard(title: "Goal", value: "\(String(user.dailyGoal)) mL")
 
-    func formattedDate(_ date: Date) -> String {
+                }
+                Spacer()
+            }
+            .padding(.vertical)
+            .toolbar{
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Profile")
+                        .font(.system(size: 35, weight: .bold, design: .rounded))
+                        .padding(.top,20)
+                        .padding()
+                }
+            }
+        }
+        
+       
+    }
+    func timeFormatter(_ date: Date) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
+        formatter.timeStyle = .short
         return formatter.string(from: date)
     }
-
-    
-    
 }
 
 
+struct ProfileInfoCard: View {
+        var title: String
+        var value: String
+        
+        var body: some View {
+            
+            HStack{
+                Text(title)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                Spacer()
+                Text(value)
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.blue)
+            }
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 15).fill(Color.gray.opacity(0.1)).shadow(radius: 5))
+            .padding(.horizontal)
+        }
+    }
 
+
+struct ProfileEditView: View {
+    @ObservedObject var user: UserModel
+    @Environment(\.dismiss) var dismiss
+    @State private var isShowingImagePicker = false
+
+    var body: some View {
+        NavigationView {
+            VStack(spacing: 20) {
+                VStack(spacing: 15) {
+                    HStack {
+                        Text("Username")
+                            .font(.headline)
+                        Spacer()
+                        TextField("Enter name", text: $user.username)
+                            .multilineTextAlignment(.leading)
+                            .frame(width: 150)
+                            .padding(10)
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                    }
+
+                    HStack {
+                        Text("Gender")
+                            .font(.headline)
+                        Spacer()
+                        Picker("", selection: $user.gender) {
+                            Text("Male").tag("Male")
+                            Text("Female").tag("Female")
+                        }
+                        .pickerStyle(SegmentedPickerStyle())
+                        .frame(width: 180)
+                    }
+
+                    HStack {
+                        Text("Weight")
+                            .font(.headline)
+                        Spacer()
+                        Stepper("\(user.weight) kg", value: $user.weight, in: 30...200, step: 1)
+                    }
+
+                    HStack {
+                        Text("Daily Goal")
+                            .font(.headline)
+                        Spacer()
+                        Stepper("\(Int(user.dailyGoal)) mL", value: $user.dailyGoal, in: 500...5000, step: 50)
+                    }
+
+                    HStack {
+                        Text("Wake-up Time")
+                            .font(.headline)
+                        Spacer()
+                        DatePicker("", selection: $user.wakeup, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                    }
+
+                    HStack {
+                        Text("Sleep Time")
+                            .font(.headline)
+                        Spacer()
+                        DatePicker("", selection: $user.sleep, displayedComponents: .hourAndMinute)
+                            .labelsHidden()
+                    }
+                }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 15).fill(Color.white).shadow(radius: 5))
+                .padding(.horizontal)
+
+                HStack(spacing: 20) {
+                    Button(action: {
+                        user.loadUserData()
+                        dismiss() }) {
+                        Text("Cancel")
+                            .foregroundColor(.red)
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(RoundedRectangle(cornerRadius: 15).stroke(Color.red, lineWidth: 2))
+                    }
+
+                    Button(action: {
+                        user.saveUserData()
+                        dismiss()
+                    }) {
+                        Text("Save")
+                            .foregroundColor(.white)
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(RoundedRectangle(cornerRadius: 15).fill(Color.blue))
+                    }
+                }
+                .padding(.horizontal)
+                Spacer()
+            }
+            .padding(.top)
+            .navigationTitle("Edit Profile")
+        }
+    }
+}
 
 #Preview {
-    ProfileView(user: UserModel(context: PersistenceController.shared.container.viewContext) )
+    ProfileView(user: UserModel(context: PersistenceController.shared.container.viewContext))
 }
