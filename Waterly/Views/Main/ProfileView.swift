@@ -14,7 +14,7 @@ struct ProfileView: View {
         NavigationStack{
             VStack {
                 HStack{
-                    Image(user.gender == "male" ? "male" : "female")
+                    Image(user.profileImage)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 90,height: 90)
@@ -37,7 +37,7 @@ struct ProfileView: View {
                 
                 
                 VStack(spacing:15){
-                    ProfileInfoCard(title: "Gender", value: user.gender)
+                    ProfileInfoCard(title: "Gender", value: user.gender.capitalized)
                     ProfileInfoCard(title: "Weight", value: "\(String(user.weight)) kg")
                     ProfileInfoCard(title: "Wake-up time", value: timeFormatter(user.wakeup))
                     ProfileInfoCard(title: "Sleep time", value: timeFormatter(user.sleep))
@@ -56,9 +56,11 @@ struct ProfileView: View {
                 }
             }
         }
+        .id(user.profileImage)
         
        
     }
+       
     func timeFormatter(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
@@ -91,7 +93,23 @@ struct ProfileInfoCard: View {
 struct ProfileEditView: View {
     @ObservedObject var user: UserModel
     @Environment(\.dismiss) var dismiss
-    @State private var isShowingImagePicker = false
+
+    @State private var tempUsername: String
+    @State private var tempGender: String
+    @State private var tempWeight: Int
+    @State private var tempDailyGoal: Double
+    @State private var tempWakeup: Date
+    @State private var tempSleep: Date
+
+    init(user: UserModel) {
+        self.user = user
+        _tempUsername = State(initialValue: user.username)
+        _tempGender = State(initialValue: user.gender)
+        _tempWeight = State(initialValue: user.weight)
+        _tempDailyGoal = State(initialValue: user.dailyGoal)
+        _tempWakeup = State(initialValue: user.wakeup)
+        _tempSleep = State(initialValue: user.sleep)
+    }
 
     var body: some View {
         NavigationView {
@@ -101,7 +119,7 @@ struct ProfileEditView: View {
                         Text("Username")
                             .font(.headline)
                         Spacer()
-                        TextField("Enter name", text: $user.username)
+                        TextField("Enter name", text: $tempUsername)
                             .multilineTextAlignment(.leading)
                             .frame(width: 150)
                             .padding(10)
@@ -113,33 +131,33 @@ struct ProfileEditView: View {
                         Text("Gender")
                             .font(.headline)
                         Spacer()
-                        Picker("", selection: $user.gender) {
-                            Text("Male").tag("Male")
-                            Text("Female").tag("Female")
+                        Picker("Gender", selection: $tempGender) {
+                            Text("Male").tag("male")
+                            Text("Female").tag("female")
                         }
                         .pickerStyle(SegmentedPickerStyle())
                         .frame(width: 180)
                     }
-
+                
                     HStack {
                         Text("Weight")
                             .font(.headline)
                         Spacer()
-                        Stepper("\(user.weight) kg", value: $user.weight, in: 30...200, step: 1)
+                        Stepper("\(tempWeight) kg", value: $tempWeight, in: 30...200, step: 1)
                     }
 
                     HStack {
                         Text("Daily Goal")
                             .font(.headline)
                         Spacer()
-                        Stepper("\(Int(user.dailyGoal)) mL", value: $user.dailyGoal, in: 500...5000, step: 50)
+                        Stepper("\(Int(tempDailyGoal)) mL", value: $tempDailyGoal, in: 500...5000, step: 50)
                     }
 
                     HStack {
                         Text("Wake-up Time")
                             .font(.headline)
                         Spacer()
-                        DatePicker("", selection: $user.wakeup, displayedComponents: .hourAndMinute)
+                        DatePicker("", selection: $tempWakeup, displayedComponents: .hourAndMinute)
                             .labelsHidden()
                     }
 
@@ -147,7 +165,7 @@ struct ProfileEditView: View {
                         Text("Sleep Time")
                             .font(.headline)
                         Spacer()
-                        DatePicker("", selection: $user.sleep, displayedComponents: .hourAndMinute)
+                        DatePicker("", selection: $tempSleep, displayedComponents: .hourAndMinute)
                             .labelsHidden()
                     }
                 }
@@ -157,8 +175,8 @@ struct ProfileEditView: View {
 
                 HStack(spacing: 20) {
                     Button(action: {
-                        user.loadUserData()
-                        dismiss() }) {
+                        dismiss()
+                    }) {
                         Text("Cancel")
                             .foregroundColor(.red)
                             .font(.headline)
@@ -168,6 +186,13 @@ struct ProfileEditView: View {
                     }
 
                     Button(action: {
+                        user.username = tempUsername
+                        user.gender = tempGender
+                        user.weight = tempWeight
+                        user.dailyGoal = tempDailyGoal
+                        user.wakeup = tempWakeup
+                        user.sleep = tempSleep
+
                         user.saveUserData()
                         dismiss()
                     }) {
@@ -187,6 +212,7 @@ struct ProfileEditView: View {
         }
     }
 }
+
 
 #Preview {
     ProfileView(user: UserModel(context: PersistenceController.shared.container.viewContext))

@@ -21,17 +21,30 @@ class UserModel: ObservableObject {
     @Published var waterConsumed: Double = 0.0
     @Published var progressPercentage: Int = 0
     @Published var lastUpdated: Date = Date()
-    @Published var gender: String = ""
+    @Published var gender: String = "female" {
+        didSet {
+            updateProfileImage()
+            print("Gender changed to: \(gender)")
+        }
+    }
+    @Published var profileImage: String = "female"
+
     @Published var weight: Int = 0
     @Published var wakeup: Date = Date()
     @Published var sleep: Date = Date()
     @Published var sportLevel: String = "none"
+    
+    private func updateProfileImage() {
+        profileImage = (gender == "female") ? "female" : "male"
+    }
+
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
         self.context = context
         loadUserData()
     }
+    
     
     // Core Data'dan kullanıcı verilerini yükler
     func loadUserData() {

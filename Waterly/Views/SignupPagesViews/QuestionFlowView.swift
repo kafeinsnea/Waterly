@@ -82,7 +82,7 @@ struct GenderQuestionView: View {
             HStack(spacing: 55) {
                 Button{
                     selectedGender = .female
-                    user.gender = "female"
+                    user.gender = "Female"
                 }label: {
                     ZStack {
                         Circle()
@@ -95,7 +95,7 @@ struct GenderQuestionView: View {
                 }
                 Button{
                     selectedGender = .male
-                    user.gender = "male"
+                    user.gender = "Male"
                 }label: {
                     ZStack {
                         Circle()
