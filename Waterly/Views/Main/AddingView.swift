@@ -12,14 +12,21 @@ struct AddingView: View {
     @Environment(\.managedObjectContext) var viewContext
     @State private var isSheetPresented = false
     @State private var lastAddedAmount: Double = 0
+    @State private var showAlert = false
+    @State private var selectedAmount: Double = 250
     
     var body: some View {
+        ZStack{
+            Color(.systemGray6)
+                .ignoresSafeArea()
         VStack{
             ZStack{
-                RoundedRectangle(cornerRadius: 15)
-                    .frame(width: 365,height:470)
-                    .foregroundStyle(Color.white)
-                    .shadow(radius: 13)
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(Color.white.opacity(0.2))
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .shadow(radius: 10)
+                    .frame(width: 350, height: 450)
                 VStack(spacing:6) {
                     WaveView(progress: Binding(
                         get: { CGFloat(user.waterConsumed / max(1, user.dailyGoal)) },
@@ -30,36 +37,69 @@ struct AddingView: View {
                         }
                     ))
                     
-                        Text("\(Int(user.waterConsumed)) mL")
-                            .font(.system(size: 30, weight: .bold, design: .rounded))
-                  
+                    Text("\(Int(user.waterConsumed)) mL")
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
+                    
                     Text("Daily Goal : \(Int(user.dailyGoal)) mL")
                         .font(.system(size: 18, weight: .medium, design: .rounded))
+                        .foregroundStyle(.gray)
                     
-                    Button{
-                        user.removeLastAddedWater()
-                    }label: {
-                        Image(systemName: "minus")
-                            .foregroundStyle(Color.white)
-                            .background(Circle().fill(Color.red).frame(width: 45,height: 45))
+                    Button {
+                        showAlert = true
+                    } label: {
+                        Text("Undo Last")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundStyle(.white)
+                        .padding()
+                        .background(Color.red)
+                        .frame(height:40)
+                        .cornerRadius(15)
                     }
-                    .padding(30)
-               
-//
-//                                                        Button( "Reset Progress") {
-//                                                            user.resetProgress()
-//                                                        }
+                    .padding(20)
+                    .alert("Remove last added water?", isPresented: $showAlert) {
+                        Button("Cancel", role: .cancel) {}
+                        Button("Remove", role: .destructive) {
+                            user.removeLastAddedWater()
+                        } }
+                    
+                    //
+                    //                                                        Button( "Reset Progress") {
+                    //                                                            user.resetProgress()
+                    //                                                        }
                 }
             }
+            VStack(spacing: 15) {
                 Text("Add Water")
                     .font(.system(size: 22, weight: .bold, design: .rounded))
-                    .frame(maxWidth: .infinity,alignment: .leading)
-                    .padding(.top,17)
-                    .padding(.horizontal,25)
-          
-            ButtonView(user: user)
+                    .padding(.bottom, 5)
                 
+                Slider(value: $selectedAmount, in: 100...1000, step: 50)
+                    .accentColor(.blue)
+                    .padding(.horizontal, 30)
+                
+                Text("\(Int(selectedAmount)) mL")
+                    .font(.title2.bold())
+                    .padding(.top, 5)
+                
+                Button(action: {
+                    user.addWater(amount: selectedAmount)
+                    user.saveUserData()
+                    user.updateProgress()
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred() // Haptic feedback
+                }) {
+                    Text("Add")
+                        .font(.title2.bold())
+                        .frame(width: 150, height: 50)
+                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+                        .foregroundColor(.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 25))
+                        .shadow(radius: 10)
+                }
+            }
+            .padding()
+            
         }
+    }
     }
 }
 

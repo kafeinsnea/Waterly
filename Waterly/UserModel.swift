@@ -169,7 +169,41 @@ class UserModel: ObservableObject {
             return []
         }
     }
+    func deleteAllData() {
+        let fetchRequests: [NSFetchRequest<NSFetchRequestResult>] = [
+            WaterGoal.fetchRequest(),
+            WaterRecord.fetchRequest()
+        ]
+        
+        do {
+            for request in fetchRequests {
+                let objects = try context.fetch(request)
+                for object in objects {
+                    if let object = object as? NSManagedObject {
+                        context.delete(object)
+                    }
+                }
+            }
+            try context.save()
+            resetUserDefaults()
+            print("✅ All user data deleted successfully.")
+        } catch {
+            print("❌ Error deleting all data: \(error)")
+        }
+    }
 
+    private func resetUserDefaults() {
+        username = ""
+        dailyGoal = 2000.0
+        waterConsumed = 0.0
+        progressPercentage = 0
+        gender = "female"
+        profileImage = "female"
+        weight = 0
+        wakeup = Date()
+        sleep = Date()
+        sportLevel = "none"
+    }
 
    }
 

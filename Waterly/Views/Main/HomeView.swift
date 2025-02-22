@@ -12,61 +12,35 @@ struct HomeView: View {
     
     @ObservedObject var user: UserModel
     @Environment(\.managedObjectContext) var viewContext
-    
-    //    @State private var isShowingAlert: Bool = false
-    //    @State private var customAmount: String = ""
-    
+
     var progress: CGFloat {
         return min(user.waterConsumed / user.dailyGoal, 1.0)
     }
+    
     var body: some View {
-        ZStack{
-            Color(#colorLiteral(red: 0.9781374335, green: 0.9815732837, blue: 0.9907125831, alpha: 1))
-            NavigationStack{
-                VStack{
+        NavigationStack{
+            ZStack{
+                Color(.systemGray6)
+                    .ignoresSafeArea()
+                VStack(spacing:20){
                     NavigationLink(destination: AddingView(user:user)) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 20)
-                                .frame(width: 370, height: 150)
-                                .shadow(radius: 10)
-                                .foregroundStyle(Color(#colorLiteral(red: 0.7819901109, green: 0.751116097, blue: 0.8376366496, alpha: 1)))
-                            HStack {
-                                ZStack {
-                                    Circle()
-                                        .stroke(Color.gray.opacity(0.5), lineWidth: 11)
-                                    // Dolu Kısım (Progress)
-                                    Circle()
-                                        .trim(from: 0.0, to: progress)
-                                        .stroke(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)),style: StrokeStyle(lineWidth: 11, lineCap: .round))
-                                        .rotationEffect(.degrees(-90))
-                                        .animation(.easeInOut(duration: 0.5), value: progress)
-                                    Text("\(user.progressPercentage)%")
-                                        .font(.system(size: 30, weight: .bold, design: .rounded))
-                                        .italic()
-                                        .foregroundStyle(Color(#colorLiteral(red: 0.2038662732, green: 0.1776102781, blue: 0.2745614052, alpha: 1)))
-                                }
-                                .frame(width: 120, height: 120)
-                                .padding()
-                                
-                                Text("Today's Progress")
-                                    .font(.system(size: 25, weight: .bold, design: .rounded))
-                                    .foregroundStyle(Color(#colorLiteral(red: 0.2038662732, green: 0.1776102781, blue: 0.2745614052, alpha: 1)))
-                                    .padding()
-                            }
-                        }
+                        ProgressCardView(progress: progress, percentage: user.progressPercentage)
                     }
-                    .padding()
+                    .buttonStyle(.plain)
                     
-                    HStack{
+                    
+                    HStack(spacing: 16){
                         ZStack(alignment: .topLeading)  {
                             RoundedRectangle(cornerRadius: 20)
-                                .frame(width: 180,height: 170)
+                                .frame(height: 170)
                                 .foregroundStyle(Color.white)
-                                .shadow(radius: 10)
+                                .shadow(radius: 5)
                             
-                            VStack(alignment: .leading){                            Text("🎯 Daily Goal")
+                            VStack(alignment: .leading, spacing: 8){                            Text("🎯 Daily Goal")
                                     .font(.system(size: 24, weight: .bold, design: .rounded))
                                     .foregroundStyle(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)))
+                                    .padding(.bottom,19)
+
                                 HStack {
                                     Text("\(Decimal(user.dailyGoal))")
                                         .font(.system(size: 30, weight: .bold, design: .rounded))
@@ -74,23 +48,22 @@ struct HomeView: View {
                                     Text("mL")
                                         .font(.system(size: 17, weight: .regular, design: .rounded))
                                 }
-                                .padding(.top,8)
                             }
                             .padding()
                             
                         }
                         ZStack(alignment: .topLeading) {
                             RoundedRectangle(cornerRadius: 20)
-                                .frame(width: 180,height: 170)
+                                .frame(height: 170)
                                 .foregroundStyle(Color.white)
-                                .shadow(radius: 10)
+                                .shadow(radius: 5)
                             
+                            VStack(alignment: .leading, spacing: 8) {
                             Text("💧 Water")
                                 .font(.system(size: 24, weight: .bold, design: .rounded))
                                 .foregroundStyle(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)))
-                                .padding()
-                            
-                            VStack {
+                                .padding(.bottom,19)
+            
                                 HStack {
                                     Text("\(Decimal(user.waterConsumed/1000)) of \(Decimal(user.dailyGoal/1000))")
                                         .font(.system(size: 20, weight: .bold, design: .rounded))
@@ -99,40 +72,112 @@ struct HomeView: View {
                                 }
                                 ProgressView(value: progress)
                                     .progressViewStyle(LinearProgressViewStyle(tint: .blue.opacity(0.7)))
-                                    .scaleEffect(x: 1, y: 2, anchor: .center)
-                                    .padding()
-                                
+                                    .scaleEffect(y: 2)
+                                    .padding(.top, 8)
+
                             }
-                            .padding(.top, 80)
+                            .padding()
                         }
                     }
-                    .padding(.horizontal)
-                    
+
                     VStack(spacing: -8) {
                         Text("Today's Records")
                             .font(.system(size: 25, weight: .bold, design: .rounded))
                             .foregroundStyle(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)))
                             .frame(maxWidth:360, alignment: .leading)
-                            .padding(.top, 17)
+                            .padding(.horizontal)
+                        
                         
                         DailyRecordsView(user: user, filterDate: Date())
                     }
                     
                 }
                 .padding()
-                .toolbar{
-                    ToolbarItem(placement: .topBarLeading) {
-                        Text("Hello, \(user.username) 👋")
-                            .font(.system(size: 35, weight: .bold, design: .rounded))
-                            .padding(.top,20)
-                            .padding()
-                    }
-                }
-                
+                .navigationTitle("Hello, \(user.username) 👋")
             }
         }
     }
 }
+
+struct ProgressCardView: View {
+    let progress: CGFloat
+    let percentage: Int
+    
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.purple.opacity(0.2))
+                .frame(height: 150)
+                .shadow(radius: 10)
+            
+            HStack {
+                CircularProgressView(progress: progress, percentage: percentage)
+                    .frame(width: 120, height: 120)
+
+                Text("Today's Progress")
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color.purple)
+                    .padding()
+            }
+
+        }
+    }
+}
+
+struct InfoCardView: View {
+    let title: String
+    let value: String
+    var progress: CGFloat? = nil
+    
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(Color.white)
+                .frame(height: 170)
+                .shadow(radius: 10)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                Text(title)
+                    .font(.system(size: 24, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)))
+
+                Text(value)
+                    .font(.system(size: 18, weight: .bold, design: .rounded))
+
+                if let progress = progress {
+                    ProgressView(value: progress)
+                        .progressViewStyle(LinearProgressViewStyle(tint: .blue))
+                        .scaleEffect(y: 2)
+                        .padding(.top, 8)
+                }
+            }
+            .padding()
+        }
+    }
+}
+
+struct CircularProgressView: View {
+    let progress: CGFloat
+    let percentage: Int
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(Color.gray.opacity(0.5), lineWidth: 11)
+            Circle()
+                .trim(from: 0.0, to: progress)
+                .stroke(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)),style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(.easeInOut(duration: 0.5), value: progress)
+            Text("\(percentage)%")
+                .font(.system(size: 30, weight: .bold, design: .rounded))
+                .italic()
+                .foregroundStyle(Color(#colorLiteral(red: 0.2038662732, green: 0.1776102781, blue: 0.2745614052, alpha: 1)))
+        }
+      
+    }
+}
+
 
 #Preview {
     HomeView(user: UserModel(context: PersistenceController.shared.container.viewContext))

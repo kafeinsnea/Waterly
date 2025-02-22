@@ -32,11 +32,15 @@ struct MainView: View {
                     .onAppear {
                         user.loadUserData()
                     }
+                  
+
                 }else{
                     HelloView(user: user)
                 }
-
+            
     }
+   
+
 }
 
 #Preview {
