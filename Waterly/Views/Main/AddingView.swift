@@ -68,35 +68,37 @@ struct AddingView: View {
                     //                                                        }
                 }
             }
-            VStack(spacing: 15) {
-                Text("Add Water")
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                    .padding(.bottom, 5)
-                
-                Slider(value: $selectedAmount, in: 100...1000, step: 50)
-                    .accentColor(.blue)
-                    .padding(.horizontal, 30)
-                
-                Text("\(Int(selectedAmount)) mL")
-                    .font(.title2.bold())
-                    .padding(.top, 5)
-                
-                Button(action: {
-                    user.addWater(amount: selectedAmount)
-                    user.saveUserData()
-                    user.updateProgress()
-                    UIImpactFeedbackGenerator(style: .medium).impactOccurred() // Haptic feedback
-                }) {
-                    Text("Add")
-                        .font(.title2.bold())
-                        .frame(width: 150, height: 50)
-                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
-                        .foregroundColor(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 25))
-                        .shadow(radius: 10)
-                }
-            }
-            .padding()
+//            VStack(spacing: 15) {
+//                Text("Add Water")
+//                    .font(.system(size: 22, weight: .bold, design: .rounded))
+//                    .padding(.bottom, 5)
+//                
+//                Slider(value: $selectedAmount, in: 100...1000, step: 50)
+//                    .accentColor(.blue)
+//                    .padding(.horizontal, 30)
+//                
+//                Text("\(Int(selectedAmount)) mL")
+//                    .font(.title2.bold())
+//                    .padding(.top, 5)
+//                
+//                Button(action: {
+//                    user.addWater(amount: selectedAmount)
+//                    user.saveUserData()
+//                    user.updateProgress()
+//                    UIImpactFeedbackGenerator(style: .medium).impactOccurred() // Haptic feedback
+//                }) {
+//                    Text("Add")
+//                        .font(.title2.bold())
+//                        .frame(width: 150, height: 50)
+//                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue, Color.purple]), startPoint: .leading, endPoint: .trailing))
+//                        .foregroundColor(.white)
+//                        .clipShape(RoundedRectangle(cornerRadius: 25))
+//                        .shadow(radius: 10)
+//                }
+//            }
+//            .padding()
+            ButtonView(user: user)
+                .padding()
             
         }
     }

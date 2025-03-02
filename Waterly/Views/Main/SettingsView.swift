@@ -12,6 +12,7 @@ struct SettingsView: View {
     @ObservedObject var user: UserModel
     @AppStorage("isDarkMode") private var isDarkMode: Bool = false
     @AppStorage("isReminderEnabled") private var isReminderEnabled: Bool = false
+    @State private var isShowingDeleteConfirmation: Bool = false
 
     var body: some View {
         NavigationStack {
@@ -36,11 +37,13 @@ struct SettingsView: View {
                 .settingsCard()
 
                 VStack {
-                    settingsRow(icon: "trash", text: "Delete all data")
+                    settingsRow(icon: "trash", text: "Delete all data") {
+                        isShowingDeleteConfirmation = true
+                    }
                     Divider()
-                    settingsRow(icon: "shield", text: "Privacy policy")
-                    Divider()
-                    settingsRow(icon: "translate", text: "App Language")
+//                    settingsRow(icon: "shield", text: "Privacy policy")
+//                    Divider()
+//                    settingsRow(icon: "translate", text: "App Language")
                 }
                 .settingsCard()
             }
@@ -48,6 +51,14 @@ struct SettingsView: View {
                 await requestNotificationPermission()
             }
             .navigationTitle("Settings")
+            .alert("Are you sure?",  isPresented: $isShowingDeleteConfirmation) {
+                Button("Cancel",role: .cancel) {}
+                Button("Delete",role: .destructive){
+                    user.deleteAllData()
+                }
+            } message: {
+                Text("This will permanently delete all your data.")
+            }
         }
     }
 
@@ -118,7 +129,7 @@ struct SettingsView: View {
     }
 
     @ViewBuilder
-    private func settingsRow(icon: String, text: String) -> some View {
+    private func settingsRow(icon: String, text: String, action: @escaping () -> Void) -> some View {
         HStack {
             Image(systemName: icon)
                 .resizable()
@@ -129,9 +140,7 @@ struct SettingsView: View {
             Text(text)
                 .font(.headline)
             Spacer()
-            Button{
-                
-            }label: {
+            Button(action: action) {
                 Image(systemName: "chevron.right")
             }
             .padding()
