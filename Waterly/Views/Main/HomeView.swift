@@ -31,10 +31,10 @@ struct HomeView: View {
                             RoundedRectangle(cornerRadius: 20)
                                 .frame(height: 170)
                                 .foregroundStyle(Color.white)
-                                .shadow(radius: 5)
+                                .shadow(radius: 10)
                             
                             VStack(alignment: .leading, spacing: 8){
-                                Text("🎯 Daily Goal")
+                                Text("🎯 \(Text(LocalizedStringKey("dailygoal")))")
                                     .font(.system(size: 24, weight: .bold, design: .rounded))
                                     .foregroundStyle(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)))
                                     .padding(.bottom,19)
@@ -54,18 +54,18 @@ struct HomeView: View {
                             RoundedRectangle(cornerRadius: 20)
                                 .frame(height: 170)
                                 .foregroundStyle(Color.white)
-                                .shadow(radius: 5)
+                                .shadow(radius: 10)
                             
                             VStack(alignment: .leading, spacing: 8) {
-                                Text("💧 Water")
+                                Text("💧 \(Text(LocalizedStringKey("water")))")
                                     .font(.system(size: 24, weight: .bold, design: .rounded))
                                     .foregroundStyle(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)))
                                     .padding(.bottom,19)
             
                                 HStack {
                                     Text("\(Decimal(user.waterConsumed/1000)) of \(Decimal(user.dailyGoal/1000))")
-                                        .font(.system(size: 20, weight: .bold, design: .rounded))
-                                    Text("Liters")
+                                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                                    Text("liters")
                                         .font(.system(size: 15, weight: .regular, design: .rounded))
                                 }
                                 ProgressView(value: progress)
@@ -77,21 +77,21 @@ struct HomeView: View {
                         }
                     }
                     VStack(spacing: -8) {
-                        Text("Today's Records")
+                        Text("todays_records")
                             .font(.system(size: 25, weight: .bold, design: .rounded))
                             .foregroundStyle(Color(#colorLiteral(red: 0.41762954, green: 0.3081524226, blue: 0.5259574056, alpha: 1)))
                             .frame(maxWidth:360, alignment: .leading)
-                            .padding(.horizontal)
                         
                         DailyRecordsView(user: user, filterDate: Date())
                     }
                 }
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        Text("Hello, \(user.username.isEmpty ? "Guest" : user.username) 👋")
+                        Text("\(Text(LocalizedStringKey("hello"))), \(user.username.isEmpty ? "Guest" : user.username) 👋")
                             .font(.system(size: 30, weight: .bold, design: .rounded))
                             .foregroundColor(.primary)
                             .padding(.top,15)
+                            .padding()
                     }
                 }
                 .padding()
@@ -111,12 +111,12 @@ struct ProgressCardView: View {
                 .fill(Color.purple.opacity(0.2))
                 .frame(height: 150)
                 .shadow(radius: 10)
-            
+
             HStack {
                 CircularProgressView(progress: progress, percentage: percentage)
                     .frame(width: 120, height: 120)
                 
-                Text("Today's Progress")
+                Text("todays_progress")
                     .font(.system(size: 22, weight: .medium, design: .rounded))
                     .foregroundStyle(Color.purple)
                     .padding()

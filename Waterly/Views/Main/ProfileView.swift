@@ -40,20 +40,21 @@ struct ProfileView: View {
                 .padding()
                 
                 VStack(spacing: 15) {
-                    ProfileInfoCard(title: "Gender", value: user.gender.capitalized)
-                    ProfileInfoCard(title: "Weight", value: "\(user.weight) kg")
-                    ProfileInfoCard(title: "Wake-up Time", value: timeFormatter(user.wakeup))
-                    ProfileInfoCard(title: "Sleep Time", value: timeFormatter(user.sleep))
-                    ProfileInfoCard(title: "Goal", value: "\(user.dailyGoal) mL")
+                    ProfileInfoCard(title: "gender_title", value: user.gender.capitalized)
+                    ProfileInfoCard(title: "weight_title", value: "\(user.weight) kg")
+                    ProfileInfoCard(title: "wakeup_title", value: timeFormatter(user.wakeup))
+                    ProfileInfoCard(title: "sleep_title", value: timeFormatter(user.sleep))
+                    ProfileInfoCard(title: "goal_title", value: "\(user.dailyGoal) mL")
                 }
                 
                 Spacer()
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Text("Profile")
+                    Text("profile_title")
                         .font(.system(size: 30, weight: .bold, design: .rounded))
                         .padding(.top,15)
+                        .padding()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: SettingsView(user: user)) {
@@ -81,7 +82,7 @@ struct ProfileInfoCard: View {
     
     var body: some View {
         HStack {
-            Text(title)
+            Text(LocalizedStringKey(title))
                 .font(.system(size: 21, weight: .bold, design: .rounded))
             Spacer()
             Text(value)
@@ -120,7 +121,7 @@ struct ProfileEditView: View {
             VStack(spacing: 20) {
                 VStack(spacing: 15) {
                     HStack {
-                        Text("Username")
+                        Text("username_title")
                             .font(.headline)
                         Spacer()
                         TextField("Enter name", text: $tempUsername)
@@ -132,33 +133,33 @@ struct ProfileEditView: View {
                     }
                     
                     HStack {
-                        Text("Gender")
+                        Text("gender_title")
                             .font(.headline)
                         Spacer()
-                        Picker("Gender", selection: $tempGender) {
-                            Text("Male").tag("male")
-                            Text("Female").tag("female")
+                        Picker("gender_title", selection: $tempGender) {
+                            Text("male_title").tag("male")
+                            Text("female_title").tag("female")
                         }
                         .pickerStyle(SegmentedPickerStyle())
                         .frame(width: 180)
                     }
                     
                     HStack {
-                        Text("Weight")
+                        Text("weight_title")
                             .font(.headline)
                         Spacer()
                         Stepper("\(tempWeight) kg", value: $tempWeight, in: 30...200, step: 1)
                     }
                     
                     HStack {
-                        Text("Daily Goal")
+                        Text("goal_title")
                             .font(.headline)
                         Spacer()
                         Stepper("\(Int(tempDailyGoal)) mL", value: $tempDailyGoal, in: 500...5000, step: 50)
                     }
                     
                     HStack {
-                        Text("Wake-up Time")
+                        Text("wakeup_title")
                             .font(.headline)
                         Spacer()
                         DatePicker("", selection: $tempWakeup, displayedComponents: .hourAndMinute)
@@ -166,7 +167,7 @@ struct ProfileEditView: View {
                     }
                     
                     HStack {
-                        Text("Sleep Time")
+                        Text("sleep_title")
                             .font(.headline)
                         Spacer()
                         DatePicker("", selection: $tempSleep, displayedComponents: .hourAndMinute)
@@ -179,7 +180,7 @@ struct ProfileEditView: View {
                 
                 HStack(spacing: 20) {
                     Button(action: { dismiss() }) {
-                        Text("Cancel")
+                        Text("cancel")
                             .foregroundColor(.red)
                             .font(.headline)
                             .frame(maxWidth: .infinity)
@@ -188,7 +189,7 @@ struct ProfileEditView: View {
                     }
                     
                     Button(action: saveChanges) {
-                        Text("Save")
+                        Text("save_title")
                             .foregroundColor(.white)
                             .font(.headline)
                             .frame(maxWidth: .infinity)
@@ -200,7 +201,7 @@ struct ProfileEditView: View {
                 Spacer()
             }
             .padding(.top)
-            .navigationTitle("Edit Profile")
+            .navigationTitle("edit_profile")
         }
     }
     

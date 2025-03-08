@@ -17,8 +17,9 @@ struct DailyRecordsView: View {
     
     var body: some View {
         let filteredRecords = user.fetchRecords(for: filterDate)
+            .sorted(by: {$0.date ?? Date() > $1.date ?? Date() })
         ScrollView {
-            VStack(spacing: -20) {  
+            VStack(spacing: -40) {  
                 ForEach(filteredRecords, id: \.self) { record in
                     ZStack {
                         HStack {
@@ -54,8 +55,8 @@ struct DailyRecordsView: View {
                 }
             }
         }
-        .confirmationDialog("Delete", isPresented: $showDeleteConfirmation) {
-            Button("Delete", role: .destructive) {
+        .confirmationDialog("delete", isPresented: $showDeleteConfirmation) {
+            Button("delete", role: .destructive) {
                 if let recordToDelete = selectedRecord {
                     user.deleteRecord(recordToDelete)
                     selectedRecord = nil

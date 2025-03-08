@@ -21,7 +21,7 @@ class UserModel: ObservableObject {
     @Published var waterConsumed: Double = 0.0
     @Published var progressPercentage: Int = 0
     @Published var lastUpdated: Date = Date()
-    @Published var gender: String = "female" {
+    @Published var gender: String = "female_title" {
         didSet {
             updateProfileImage()
             print("Gender changed to: \(gender)")

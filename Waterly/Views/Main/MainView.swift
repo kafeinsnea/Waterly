@@ -21,7 +21,7 @@ struct MainView: View {
                             .tag(1)
                         AddingView(user: user)
                             .tag(2)
-                        GraphicView2(user: user)
+                        GraphicView(user: user)
                             .tag(3)
                         ProfileView(user:user)
                             .tag(4)

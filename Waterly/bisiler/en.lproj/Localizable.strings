@@ -18,3 +18,32 @@
 "cancel" = "Cancel";
 "delete" = "Delete";
 "change_language" = "Change Language";
+
+//profileview
+"profile_title" = "Profile";
+"gender_title" = "Gender";
+"weight_title" = "Weight";
+"wakeup_title" = "Wake-up title";
+"sleep_title" = "Sleep time";
+"goal_title" =  "Goal";
+"male_title" = "Male";
+"female_title" = "Female";
+"username_title" = "Username";
+"save_title" = "Save";
+"edit_profile" = "Edit Profile";
+
+//graphicview
+"statistics_title" = "Statistics";
+"weekly_title" = "Weekly";
+"yearly_title" = "Yearly";
+"dailygoal" = "Daily Goal";
+
+//addingview
+"undolast" = "Undo Last";
+
+//homeview
+"hello" = "Hello";
+"water" = "Water";
+"liters" = "Liters";
+"todays_records" = "Today's Records";
+"todays_progress" = "Today's Progress";

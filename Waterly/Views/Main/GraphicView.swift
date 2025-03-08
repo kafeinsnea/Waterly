@@ -8,10 +8,10 @@
 import SwiftUI
 import Charts
 
-struct GraphicView2: View {
+struct GraphicView: View {
     @ObservedObject var user: UserModel
-    @State private var selectedInterval = "Weekly"
-    let intervals = ["Weekly", "Yearly"]
+    @State private var selectedInterval = "weekly_title"
+    let intervals = ["weekly_title", "yearly_title"]
     @State private var currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
     
     var currentWeekEnd: Date {
@@ -37,13 +37,13 @@ struct GraphicView2: View {
                     
                     Picker("Select Interval", selection: $selectedInterval) {
                         ForEach(intervals, id: \.self) { interval in
-                            Text(interval)
+                            Text(LocalizedStringKey(interval))
                         }
                     }
                     .pickerStyle(.segmented)
                     .padding()
                     
-                    if selectedInterval == "Weekly" {
+                    if selectedInterval == "weekly_title" {
                         VStack {
                             HStack {
                                 Button {
@@ -98,9 +98,10 @@ struct GraphicView2: View {
                 .padding()
                 .toolbar{
                     ToolbarItem(placement: .topBarLeading) {
-                        Text("Water Intake Statistics")
+                        Text("statistics_title")
                             .font(.system(size: 30, weight: .bold, design: .rounded))
                             .padding(.top,15)
+                            .padding()
                     }
                 }
             }
@@ -132,11 +133,11 @@ struct DailyWaterChart: View {
         let data = weeklyData()
         Chart {
             ForEach(data, id: \.date) { data in
-                RuleMark(y: .value("Goal", user.dailyGoal))
+                RuleMark(y: .value("dailygoal", user.dailyGoal))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [7]))
                     .foregroundStyle(Color.mint)
                     .annotation(position: .top, alignment: .leading) {
-                        Text("Daily Goal: \(Int(user.dailyGoal)) ml")
+                        Text("\(Text(LocalizedStringKey("dailygoal"))): \(Int(user.dailyGoal)) mL")
                             .font(.caption)
                             .foregroundStyle(Color.secondary)
                     }
@@ -147,7 +148,7 @@ struct DailyWaterChart: View {
                 .foregroundStyle(data.amount >= user.dailyGoal ? Color.green.gradient : Color.blue.gradient)
                 .cornerRadius(7)
                 .annotation(position: .top) {
-                    Text("\(Int(data.amount)) ml")
+                    Text("\(Int(data.amount)) mL")
                         .font(.caption)
                         .foregroundStyle(.gray)
                 }
@@ -239,5 +240,5 @@ extension Date {
 
 
 #Preview {
-    GraphicView2(user: UserModel(context: PersistenceController.shared.container.viewContext))
+    GraphicView(user: UserModel(context: PersistenceController.shared.container.viewContext))
 }

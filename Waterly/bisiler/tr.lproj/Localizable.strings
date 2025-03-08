@@ -6,7 +6,7 @@
   
 */
 
-
+//settingsview
 "settings_title" = "Ayarlar";
 "dark_mode" = "Karanlık Mod";
 "notification" = "Bildirimler";
@@ -18,3 +18,32 @@
 "cancel" = "İptal";
 "delete" = "Sil";
 "change_language" = "Dili Değiştir";
+
+//profileview
+"profile_title" = "Profil";
+"gender_title" = "Cinsiyet";
+"weight_title" = "Kilo";
+"wakeup_title" = "Kalkış Saati";
+"sleep_title" = "Yatış Saati";
+"goal_title" =  "Hedef";
+"male_title" = "Erkek";
+"female_title" = "Kadın";
+"username_title" = "Kullanıcı adı";
+"save_title" = "Kaydet";
+"edit_profile" = "Profili Düzenle";
+
+//graphicview
+"statistics_title" = "İstatistikler";
+"weekly_title" = "Haftalık";
+"yearly_title" = "Yıllık";
+"dailygoal" = "Günlük Hedef";
+
+//addingview
+"undolast" = "Geri al";
+
+//homeview
+"hello" = "Merhaba";
+"water" ="Su";
+"liters" = "Litre";
+"todays_records" = "Bugünün Kayıtları";
+"todays_progress" = "Günlük İlerleme";

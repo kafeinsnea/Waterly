@@ -38,15 +38,15 @@ struct AddingView: View {
                     Text("\(Int(user.waterConsumed)) mL")
                         .font(.system(size: 30, weight: .bold, design: .rounded))
                     
-                    Text("Daily Goal : \(Int(user.dailyGoal)) mL")
-                        .font(.system(size: 18, weight: .medium, design: .rounded))
-                        .foregroundStyle(.gray)
+                        Text("\(Text(LocalizedStringKey("dailygoal"))): \(Int(user.dailyGoal)) mL")
+                    .font(.system(size: 18, weight: .medium, design: .rounded))
+                    .foregroundStyle(.gray)
                     
                     Button {
                         showAlert = true
                     } label: {
-                        Text("Undo Last")
-                        .font(.system(size: 18, weight: .bold))
+                        Text("undolast")
+                        .font(.system(size: 18, weight: .bold, design: .rounded))
                         .foregroundStyle(.white)
                         .padding()
                         .background(Color.red)
@@ -55,7 +55,7 @@ struct AddingView: View {
                     }
                     .padding(20)
                     .alert("Remove last added water?", isPresented: $showAlert) {
-                        Button("Cancel", role: .cancel) {}
+                        Button("cancel", role: .cancel) {}
                         Button("Remove", role: .destructive) {
                             user.removeLastAddedWater()
                         } }
