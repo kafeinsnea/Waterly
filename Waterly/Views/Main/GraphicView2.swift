@@ -32,69 +32,79 @@ struct GraphicView2: View {
     
     var body: some View {
         NavigationStack{
-            VStack(spacing: 20) {
-                
-                Picker("Select Interval", selection: $selectedInterval) {
-                    ForEach(intervals, id: \.self) { interval in
-                        Text(interval)
+            ZStack{
+                VStack(spacing: 20) {
+                    
+                    Picker("Select Interval", selection: $selectedInterval) {
+                        ForEach(intervals, id: \.self) { interval in
+                            Text(interval)
+                        }
                     }
+                    .pickerStyle(.segmented)
+                    .padding()
+                    
+                    if selectedInterval == "Weekly" {
+                        VStack {
+                            HStack {
+                                Button {
+                                    previousWeek()
+                                } label: {
+                                    Image(systemName: "chevron.left")
+                                }
+                                
+                                Text(formattedWeekRange)
+                                    .font(.headline)
+                                
+                                Button {
+                                    nextWeek()
+                                } label: {
+                                    Image(systemName: "chevron.right")
+                                }
+                            }
+                            .padding(.bottom)
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundStyle(Color.white)
+                                    .shadow(radius: 10)
+                                    .frame(width: 360,height: 280)
+                                DailyWaterChart(user: user, startDate: currentWeekStart)
+                                
+                            }
+                        }
+                    } else {
+                        VStack {
+                            HStack {
+                                Button { previousYear()} label: { Image(systemName:"chevron.left") }
+                                
+                                Text(formattedYearRange)
+                                    .font(.headline)
+                                
+                                Button { nextYear() } label: { Image(systemName: "chevron.right") }
+                            }
+                            .padding(.bottom)
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 10)
+                                    .foregroundStyle(Color.white)
+                                    .shadow(radius: 10)
+                                    .frame(width: 360,height: 280)
+                                YearlyWaterChart(user: user, year: currentYear)
+                                
+                            }
+                        }
+                    }
+                    Spacer()
+                    
                 }
-                .pickerStyle(.segmented)
                 .padding()
-                
-                if selectedInterval == "Weekly" {
-                    VStack {
-                        HStack {
-                            Button {
-                                previousWeek()
-                            } label: {
-                                Image(systemName: "chevron.left")
-                            }
-                            
-                            Text(formattedWeekRange)
-                                .font(.headline)
-                            
-                            Button {
-                                nextWeek()
-                            } label: {
-                                Image(systemName: "chevron.right")
-                            }
-                        }
-                        .padding(.bottom)
-                        ZStack{
-                            RoundedRectangle(cornerRadius: 10)
-                                .foregroundStyle(Color.white)
-                                .shadow(radius: 3)
-                                .frame(width: 360,height: 300)
-                            DailyWaterChart(user: user, startDate: currentWeekStart)
-                            
-                        }
-                    }
-                } else {
-                    VStack {
-                        HStack {
-                            Button { previousYear()} label: { Image(systemName:"chevron.left") }
-                            
-                            Text(formattedYearRange)
-                                .font(.headline)
-                            
-                            Button { nextYear() } label: { Image(systemName: "chevron.right") }
-                        }
-                        .padding(.bottom)
-                        ZStack{
-                            RoundedRectangle(cornerRadius: 10)
-                                .foregroundStyle(Color.white)
-                                .shadow(radius: 3)
-                                .frame(width: 360,height: 280)
-                            YearlyWaterChart(user: user, year: currentYear)
-                            
-                        }
+                .toolbar{
+                    ToolbarItem(placement: .topBarLeading) {
+                        Text("Water Intake Statistics")
+                            .font(.system(size: 30, weight: .bold, design: .rounded))
+                            .padding(.top,15)
                     }
                 }
-                Spacer()
             }
-            .padding()
-            .navigationTitle("Water Intake Statistics")
+            
         }
     }
     
@@ -203,7 +213,7 @@ struct YearlyWaterChart: View {
         let calendar = Calendar.current
         var data: [(String, Double, Date)] = []
         
-        for month in 0..<12 {
+        for month in 1..<13 {
             if let date = calendar.date(from: DateComponents(year: year,month: month, day: 1)) {
                 let records = user.fetchRecords(for: date)
                 let totalAmount = records.reduce(0) { $0 + $1.amount }

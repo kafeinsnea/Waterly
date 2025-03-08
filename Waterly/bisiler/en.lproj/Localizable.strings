@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  Waterly
+
+  Created by Sena Çırak on 6.03.2025.
+  
+*/
+
+// settings
+"settings_title" = "Settings";
+"dark_mode" = "Dark Mode";
+"notification" = "Notifications";
+"delete_all_data" = "Delete all data";
+"privacy_policy" = "Privacy Policy";
+"app_language" = "App Language";
+"delete_confirmation" = "Are you sure?";
+"delete_message" = "This will permanently delete all your data.";
+"cancel" = "Cancel";
+"delete" = "Delete";
+"change_language" = "Change Language";

@@ -33,14 +33,14 @@ struct ButtonView: View {
                             getCupIcon(for: size)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 50, height: 50)
+                                .frame(width: 45, height: 45)
                                 .padding(.top,5)
 
                             Text("\(size) mL")
                                 .font(.system(size: 15, weight: .bold, design: .rounded))
                                 .foregroundColor(.black)
                         }
-                        .frame(width: 100, height: 100)
+                        .frame(width: 90, height: 90)
                         .background(RoundedRectangle(cornerRadius: 15)
                             .fill(Color.white)
                             .shadow(radius: 10))

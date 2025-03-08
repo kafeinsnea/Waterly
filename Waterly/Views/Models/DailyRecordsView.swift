@@ -10,7 +10,7 @@ import SwiftUI
 struct DailyRecordsView: View {
     
     @ObservedObject var user: UserModel
-   var filterDate: Date
+    var filterDate: Date
     
     @State private var selectedRecord: WaterRecord?
     @State private var showDeleteConfirmation = false
@@ -18,61 +18,51 @@ struct DailyRecordsView: View {
     var body: some View {
         let filteredRecords = user.fetchRecords(for: filterDate)
         ScrollView {
-            VStack(spacing: -35){
-                ForEach(filteredRecords, id: \.self){ record in
+            VStack(spacing: -20) {  
+                ForEach(filteredRecords, id: \.self) { record in
                     ZStack {
-                        
-//                        RoundedRectangle(cornerRadius: 15)
-//                            .frame(width: 350, height: 70)
-//                            .foregroundStyle(Color.blue)
-                        
                         HStack {
-                            
                             Image(systemName: "drop.fill")
                                 .font(.title2)
                                 .bold()
-                                .foregroundStyle(Color(#colorLiteral(red: 0.3527679443, green: 0.6399899125, blue: 0.9096029401, alpha: 1)))
+                                .foregroundStyle(Color.blue)
                             
-                            VStack(alignment:.leading){
-                                
-                                Text("\(Int(record.amount)) ml")
+                            VStack(alignment: .leading) {
+                                Text("\(Int(record.amount)) mL")
                                     .font(.system(size: 21, weight: .bold, design: .rounded))
-                                Text(record.date?.formatted(date:.omitted, time: .shortened) ?? "unknown time")
+                                    .foregroundStyle(.primary)
+                                
+                                Text(record.date?.formatted(date: .omitted, time: .shortened) ?? "Unknown time")
                                     .font(.system(size: 16, weight: .medium, design: .rounded))
+                                    .foregroundStyle(.gray)
                             }
                             .padding()
-//                            .foregroundStyle(Color.white)
+                            
                             Spacer()
                             
-                            Button{
+                            Button {
                                 selectedRecord = record
                                 showDeleteConfirmation = true
-                            }label:{
+                            } label: {
                                 Image(systemName: "ellipsis")
-                                    .foregroundStyle(Color.black)
                                     .font(.title2)
+                                    .foregroundStyle(.black)
                             }
-                           
                         }
-//                        .padding(.horizontal,10)
-                       
                     }
                     .padding()
                 }
-                
             }
         }
         .confirmationDialog("Delete", isPresented: $showDeleteConfirmation) {
-            Button("Delete", role:.destructive){
-                if let recordToDelete = selectedRecord{
+            Button("Delete", role: .destructive) {
+                if let recordToDelete = selectedRecord {
                     user.deleteRecord(recordToDelete)
                     selectedRecord = nil
                     user.updateProgress()
                 }
             }
-           
         }
-    
     }
 }
 

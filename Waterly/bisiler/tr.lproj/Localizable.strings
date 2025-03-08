@@ -1,0 +1,20 @@
+/* 
+  Localizable.strings
+  Waterly
+
+  Created by Sena Çırak on 6.03.2025.
+  
+*/
+
+
+"settings_title" = "Ayarlar";
+"dark_mode" = "Karanlık Mod";
+"notification" = "Bildirimler";
+"delete_all_data" = "Tüm verileri sil";
+"privacy_policy" = "Gizlilik Politikası";
+"app_language" = "Uygulama Dili";
+"delete_confirmation" = "Emin misiniz?";
+"delete_message" = "Bu işlem tüm verilerinizi kalıcı olarak silecektir.";
+"cancel" = "İptal";
+"delete" = "Sil";
+"change_language" = "Dili Değiştir";

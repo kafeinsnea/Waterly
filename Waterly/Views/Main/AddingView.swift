@@ -17,11 +17,9 @@ struct AddingView: View {
     
     var body: some View {
         ZStack{
-            Color(.systemGray6)
-                .ignoresSafeArea()
-        VStack{
-            ZStack{
-                RoundedRectangle(cornerRadius: 20)
+            VStack{
+                ZStack{
+                    RoundedRectangle(cornerRadius: 20)
                     .fill(Color.white.opacity(0.2))
                     .background(.ultraThinMaterial)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -97,11 +95,13 @@ struct AddingView: View {
 //                }
 //            }
 //            .padding()
+                Spacer().frame(height: 20)
             ButtonView(user: user)
                 .padding()
             
         }
     }
+        .ignoresSafeArea()
     }
 }
 
