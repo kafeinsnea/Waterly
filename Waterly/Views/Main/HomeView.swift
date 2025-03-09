@@ -91,10 +91,10 @@ struct HomeView: View {
                             .font(.system(size: 30, weight: .bold, design: .rounded))
                             .foregroundColor(.primary)
                             .padding(.top,15)
-                            .padding()
                     }
                 }
                 .padding()
+                .padding(.top,10)
             }
         }
         .ignoresSafeArea()

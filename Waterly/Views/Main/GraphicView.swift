@@ -17,13 +17,11 @@ struct GraphicView: View {
     var currentWeekEnd: Date {
         Calendar.current.date(byAdding: .day, value: 6, to: currentWeekStart)!
     }
-    
     var formattedWeekRange: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "dd.MM"
         return "\(dateFormatter.string(from: currentWeekStart)) - \(dateFormatter.string(from: currentWeekEnd))"
     }
-    
     @State private var currentYear = Calendar.current.component(.year, from: Date())
     
     var formattedYearRange: String {
@@ -41,7 +39,6 @@ struct GraphicView: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    .padding()
                     
                     if selectedInterval == "weekly_title" {
                         VStack {
@@ -93,15 +90,19 @@ struct GraphicView: View {
                         }
                     }
                     Spacer()
-                    
+                    VStack{
+                        Text("\(Int(user.bestDayAmount)) ml")
+                        Text("\(user.bestDayAmountDate)")
+
+                    }
                 }
                 .padding()
+                .padding(.top,10)
                 .toolbar{
                     ToolbarItem(placement: .topBarLeading) {
                         Text("statistics_title")
                             .font(.system(size: 30, weight: .bold, design: .rounded))
                             .padding(.top,15)
-                            .padding()
                     }
                 }
             }

@@ -54,7 +54,6 @@ struct ProfileView: View {
                     Text("profile_title")
                         .font(.system(size: 30, weight: .bold, design: .rounded))
                         .padding(.top,15)
-                        .padding()
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: SettingsView(user: user)) {

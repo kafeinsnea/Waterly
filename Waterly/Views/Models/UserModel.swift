@@ -204,6 +204,46 @@ class UserModel: ObservableObject {
         sleep = Date()
         sportLevel = "none"
     }
-
+    func fetchAllRecords() -> [WaterRecord] {
+        let request: NSFetchRequest<WaterRecord> = WaterRecord.fetchRequest()
+        do {
+            return try context.fetch(request)
+        } catch {
+            print("Error fetching all water records: \(error)")
+            return []
+        }
+    }
+    
+    var bestDayAmount: Double {
+        let records = fetchAllRecords()
+        var dailyWaterConsumption: [String: Double] = [:]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        for record in records {
+            let dateString = dateFormatter.string(from: record.date ?? Date())
+            dailyWaterConsumption[dateString, default: 0.0] += record.amount
+        }
+        guard let bestDay = dailyWaterConsumption.max(by: { $0.value < $1.value }) else {
+            return 0.0
+        }
+        return bestDay.value
+    }
+    var bestDayAmountDate: String {
+        let records = fetchAllRecords()
+        var dailyWaterConsumption: [String: Double] = [:]
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        for record in records {
+            let dateString = dateFormatter.string(from: record.date ?? Date())
+            dailyWaterConsumption[dateString, default: 0.0] += record.amount
+        }
+        guard let bestDay = dailyWaterConsumption.max(by: { $0.value < $1.value }) else {
+            return ""
+        }
+        return bestDay.key
+    }
+    
+    
+    
    }
 
