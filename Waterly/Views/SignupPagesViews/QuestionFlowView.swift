@@ -63,7 +63,10 @@ struct NameQuestionView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
                 
             Spacer()
-            ContinueButton(user: user, selectedTab: $selectedTab, isDisabled: user.username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            HStack{
+//                BackButton(selectedTab: $selectedTab)
+                ContinueButton(user: user, selectedTab: $selectedTab, isDisabled: user.username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+            }
         }
     }
 }
@@ -108,7 +111,10 @@ struct GenderQuestionView: View {
                 }
             }
             Spacer()
-            ContinueButton(user: user, selectedTab: $selectedTab, isDisabled: selectedGender == nil)
+            HStack{
+                BackButton(selectedTab: $selectedTab)
+                ContinueButton(user: user, selectedTab: $selectedTab, isDisabled: selectedGender == nil)
+            }
         }
     }
 }
@@ -136,8 +142,11 @@ struct WeightQuestionView: View {
             .frame(width: 300, height: 170)
             .clipped()
             
-          
-            ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.weight == 0)
+            Spacer()
+            HStack{
+                BackButton(selectedTab: $selectedTab)
+                ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.weight == 0)
+            }
         }
     }
 }
@@ -187,7 +196,10 @@ struct WakeUpQuestionView: View {
                 }
                 
                 Spacer()
-                ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.wakeup == Date.distantPast)
+                HStack{
+                    BackButton(selectedTab: $selectedTab)
+                    ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.wakeup == Date.distantPast)
+                }
             }
     }
     private func updateWakeUpTime() {
@@ -249,7 +261,10 @@ struct SleepQuestionView: View {
                 }
                 
                 Spacer()
-                ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.wakeup == Date.distantPast)
+                HStack{
+                    BackButton(selectedTab: $selectedTab)
+                    ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.wakeup == Date.distantPast)
+                }
             }
     }
     private func updateSleepTime() {
@@ -294,8 +309,11 @@ struct SportQuestionView: View {
             .padding(.horizontal)
 
             Spacer()
-            BackButton(selectedTab: $selectedTab)
-            FinishButton(user: user)
+            HStack {
+                BackButton(selectedTab: $selectedTab)
+                FinishButton(user: user)
+            }
+           
         }
     }
 }
@@ -315,7 +333,7 @@ struct FinishButton: View {
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)
                 .frame(height: 60)
-                .background(RoundedRectangle(cornerRadius: 25).fill(isDisabled ? Color.gray :  Color.black))
+                .background(RoundedRectangle(cornerRadius: 25).opacity(isDisabled ? 0.5 :  1))
                 .padding()
                 .shadow(radius: 9)
               
@@ -338,8 +356,8 @@ struct ContinueButton: View {
                 .font(.system(size: 20, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
                 .frame(maxWidth: .infinity)
-                .frame(height: 60)
-                .background(RoundedRectangle(cornerRadius: 25).fill(isDisabled ? Color.gray :  Color.black))
+                .frame(height: 55)
+                .background(RoundedRectangle(cornerRadius: 25).opacity(isDisabled ? 0.5 :  1))
                 .padding()
                 .shadow(radius: 9)
               
@@ -356,12 +374,13 @@ struct BackButton: View {
         Button {
             selectedTab -= 1
         } label: {
-            Text("Back")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
+            Text("<")
+                .font(.system(size: 22, weight: .bold, design: .rounded))
                 .foregroundStyle(Color.white)
-                .frame(width: 100, height: 60)
+                .frame(width: 90, height: 55)
                 .background(RoundedRectangle(cornerRadius: 25).fill(Color.black))
                 .shadow(radius: 9)
+                .padding()
         }
     }
 }

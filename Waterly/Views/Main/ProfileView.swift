@@ -71,8 +71,10 @@ struct ProfileView: View {
     func timeFormatter(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
+        formatter.timeZone = TimeZone.current 
         return formatter.string(from: date)
     }
+
 }
 
 struct ProfileInfoCard: View {

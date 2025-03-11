@@ -1,6 +1,6 @@
 //
 //  UserModel.swift
-//  WaterTracking
+//  Waterly
 //
 //  Created by Sena Çırak on 18.12.2024.
 //
@@ -60,14 +60,24 @@ class UserModel: ObservableObject {
                 self.lastUpdated = userGoal.lastUpdated ?? Date()
                 self.gender = userGoal.gender ?? ""
                 self.weight = Int(userGoal.weight)
-                self.wakeup = userGoal.wakeup ?? Date()
-                self.sleep = userGoal.sleep ?? Date()
+
+                // 🌍 UTC'yi yerel saate çevirerek al
+                self.wakeup = convertToLocal(date: userGoal.wakeup ?? Date())
+                self.sleep = convertToLocal(date: userGoal.sleep ?? Date())
+
                 checkAndResetForNewDay()
             }
         } catch {
             print("Error fetching user data: \(error)")
         }
     }
+
+    // 📌 Tarihi yerel saate çeviren fonksiyon
+    func convertToLocal(date: Date) -> Date {
+        let timezoneOffset = TimeInterval(TimeZone.current.secondsFromGMT(for: date))
+        return date.addingTimeInterval(timezoneOffset)
+    }
+
     
     // Kullanıcı verilerini Core Data'ya kaydeder
     func saveUserData() {
@@ -90,14 +100,27 @@ class UserModel: ObservableObject {
             userGoal.lastUpdated = Date()
             userGoal.gender = gender
             userGoal.weight = Int64(weight)
-            userGoal.sleep = Date()
-            userGoal.wakeup = Date()
-            
-            try context.save()
+
+            // 🌍 Yerel zamanı UTC'ye çevirerek kaydet
+            userGoal.wakeup = convertToUTC(date: wakeup)
+            userGoal.sleep = convertToUTC(date: sleep)
+
+            if context.hasChanges {
+                try context.save()
+            }
         } catch {
             print("Error saving user data: \(error)")
         }
     }
+
+    // 📌 Tarihi UTC'ye çeviren fonksiyon
+    func convertToUTC(date: Date) -> Date {
+        let timezoneOffset = TimeInterval(TimeZone.current.secondsFromGMT(for: date))
+        return date.addingTimeInterval(-timezoneOffset)
+    }
+
+
+
     
     // Su tüketimini kaydeder
     func addWater(amount: Double) {
@@ -117,7 +140,13 @@ class UserModel: ObservableObject {
         guard let context = record.managedObjectContext else { return }
         waterConsumed -= record.amount
         context.delete(record)
-        saveUserData()
+        do {
+               if context.hasChanges {
+                   try context.save()
+               }
+           } catch {
+               print("Error deleting record: \(error)")
+           }
     }
     // WaterRecord kaydı ekler
        func addWaterRecord(amount: Double) {
@@ -126,7 +155,9 @@ class UserModel: ObservableObject {
            record.date = Date()
            
            do {
-               try context.save()
+               if context.hasChanges {
+                   try context.save()
+               }
            } catch {
                print("Error saving water record: \(error)")
            }
@@ -155,11 +186,10 @@ class UserModel: ObservableObject {
         
     func fetchRecords(for date: Date) -> [WaterRecord]{
         let request: NSFetchRequest<WaterRecord> = WaterRecord.fetchRequest()
-        let calender = Calendar.current
+        let calendar = Calendar.current
         
-        let startOfDay = calender.startOfDay(for: date)
-        let endOfDay = calender.startOfDay(for: date.addingTimeInterval(86400))
-        
+        let startOfDay = calendar.startOfDay(for: date)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
         request.predicate = NSPredicate(format: "date >= %@ AND date <= %@", startOfDay as NSDate, endOfDay as NSDate)
         
         do {
@@ -184,8 +214,10 @@ class UserModel: ObservableObject {
                     }
                 }
             }
-            try context.save()
-            resetUserDefaults()
+            
+            DispatchQueue.main.async {
+                self.resetUserDefaults()
+            }
             print("✅ All user data deleted successfully.")
         } catch {
             print("❌ Error deleting all data: \(error)")
@@ -218,7 +250,7 @@ class UserModel: ObservableObject {
         let records = fetchAllRecords()
         var dailyWaterConsumption: [String: Double] = [:]
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "d MMMM yyyy"
         for record in records {
             let dateString = dateFormatter.string(from: record.date ?? Date())
             dailyWaterConsumption[dateString, default: 0.0] += record.amount
@@ -232,7 +264,7 @@ class UserModel: ObservableObject {
         let records = fetchAllRecords()
         var dailyWaterConsumption: [String: Double] = [:]
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.dateFormat = "d MMMM yyyy"
         for record in records {
             let dateString = dateFormatter.string(from: record.date ?? Date())
             dailyWaterConsumption[dateString, default: 0.0] += record.amount
@@ -246,4 +278,3 @@ class UserModel: ObservableObject {
     
     
    }
-

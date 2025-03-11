@@ -37,6 +37,7 @@
 "weekly_title" = "Haftalık";
 "yearly_title" = "Yıllık";
 "dailygoal" = "Günlük Hedef";
+"bestday" = "En İyi Günün";
 
 //addingview
 "undolast" = "Geri al";

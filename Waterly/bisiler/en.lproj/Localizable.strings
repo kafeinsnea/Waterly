@@ -37,6 +37,7 @@
 "weekly_title" = "Weekly";
 "yearly_title" = "Yearly";
 "dailygoal" = "Daily Goal";
+"bestday" = "Your Best Day";
 
 //addingview
 "undolast" = "Undo Last";

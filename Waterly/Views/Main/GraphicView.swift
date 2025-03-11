@@ -31,8 +31,7 @@ struct GraphicView: View {
     var body: some View {
         NavigationStack{
             ZStack{
-                VStack(spacing: 20) {
-                    
+                VStack(spacing: 30) {
                     Picker("Select Interval", selection: $selectedInterval) {
                         ForEach(intervals, id: \.self) { interval in
                             Text(LocalizedStringKey(interval))
@@ -89,12 +88,12 @@ struct GraphicView: View {
                             }
                         }
                     }
+                        Text("\(Text(LocalizedStringKey("bestday"))): \(user.bestDayAmountDate) - \(Int(user.bestDayAmount)) ml 🏆")
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
+                            .foregroundStyle(Color.purple)
+                            .padding()
                     Spacer()
-                    VStack{
-                        Text("\(Int(user.bestDayAmount)) ml")
-                        Text("\(user.bestDayAmountDate)")
-
-                    }
+                    
                 }
                 .padding()
                 .padding(.top,10)
