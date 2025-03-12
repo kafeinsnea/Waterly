@@ -43,6 +43,10 @@ class UserModel: ObservableObject {
     init(context: NSManagedObjectContext) {
         self.context = context
         loadUserData()
+        
+        if dailyGoal == 2000{
+            calculateDailyGoal()
+        }
     }
     
     
@@ -274,7 +278,33 @@ class UserModel: ObservableObject {
         }
         return bestDay.key
     }
-    
+    func calculateDailyGoal() {
+        let baseMultiplier: Double
+        
+        if gender == "female"{
+            baseMultiplier = 30
+        }else{
+            baseMultiplier = 35
+        }
+        
+        var newDailyGoal = Double(weight) * baseMultiplier
+        
+        switch sportLevel {
+            case "none":
+            newDailyGoal += 0
+        case "low":
+            newDailyGoal += 300
+        case "moderate":
+            newDailyGoal += 500
+        case "intense":
+            newDailyGoal += 1000
+        default:
+            break
+        }
+        
+        dailyGoal = max(1500, min(newDailyGoal,4000))
+        
+    }
     
     
    }

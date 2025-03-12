@@ -213,7 +213,7 @@ struct ProfileEditView: View {
         user.dailyGoal = tempDailyGoal
         user.wakeup = tempWakeup
         user.sleep = tempSleep
-        
+        user.calculateDailyGoal()
         user.saveUserData()
         dismiss()
     }
