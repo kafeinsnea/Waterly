@@ -41,6 +41,9 @@
 
 //addingview
 "undolast" = "Undo Last";
+"hydration" = "Hydration";
+"add" = "Add";
+"enter_amount" = "Enter Amount";
 
 //homeview
 "hello" = "Hello";

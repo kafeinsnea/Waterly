@@ -22,7 +22,7 @@ struct HomeView: View {
         NavigationStack{
             ZStack{
                 VStack(spacing:20){
-                    NavigationLink(destination: AddingView(user:user)) {
+                    NavigationLink(destination: HydrationView(user:user)) {
                         ProgressCardView(progress: progress, percentage: user.progressPercentage)
                     }
                                     

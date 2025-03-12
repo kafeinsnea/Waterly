@@ -17,7 +17,7 @@ struct ButtonView: View {
     @State private var pressedSize: Int? = nil
     
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        ScrollView(.horizontal, showsIndicators: true) {
             HStack(spacing: 20) {
                 ForEach(cupSizes, id: \.self) { size in
                     Button {
@@ -33,27 +33,27 @@ struct ButtonView: View {
                             getCupIcon(for: size)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 45, height: 45)
+                                .frame(width: 35, height: 35)
                                 .padding(.top,5)
-
+                            
                             Text("\(size) mL")
-                                .font(.system(size: 15, weight: .bold, design: .rounded))
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
                                 .foregroundColor(.black)
                         }
-                        .frame(width: 90, height: 90)
-                        .background(RoundedRectangle(cornerRadius: 15)
-                            .fill(Color.white)
-                            .shadow(radius: 10))
+                        .frame(width: 85, height: 85)
+                        .background(RoundedRectangle(cornerRadius: 20)
+                            .fill(Color.blue.opacity(0.5).gradient)
+                            .shadow(color: .gray.opacity(0.4), radius: 5, x: 0, y: 3))
                     }
-                    .scaleEffect(pressedSize == size ? 0.9 : 1.0)
-                    .animation(.easeInOut(duration: 0.3),value: pressedSize)
+                    .scaleEffect(pressedSize == size ? 0.92 : 1.0)
+                    .animation(.easeInOut(duration: 0.2),value: pressedSize)
                    
                 }
             }
             .padding(.vertical, 15)
             .padding(.horizontal, 20)
         }
-        .frame(height: 140)
+        .frame(height: 120)
     }
 
     func getCupIcon(for size: Int) -> Image {

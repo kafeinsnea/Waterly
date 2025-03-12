@@ -62,7 +62,7 @@ struct GraphicView: View {
                                 RoundedRectangle(cornerRadius: 10)
                                     .foregroundStyle(Color.white)
                                     .shadow(radius: 10)
-                                    .frame(width: 360,height: 280)
+                                    .frame(height: 280)
                                 DailyWaterChart(user: user, startDate: currentWeekStart)
                                 
                             }

@@ -39,8 +39,11 @@
 "dailygoal" = "Günlük Hedef";
 "bestday" = "En İyi Günün";
 
-//addingview
+//hydrationview
 "undolast" = "Geri al";
+"hydration" = "Hidrasyon";
+"add" = "Ekle";
+"enter_amount" = "Miktar Gir";
 
 //homeview
 "hello" = "Merhaba";

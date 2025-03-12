@@ -19,7 +19,7 @@ struct MainView: View {
                     TabView(selection: $tabSelection){
                         HomeView(user: user)
                             .tag(1)
-                        AddingView(user: user)
+                        HydrationView(user: user)
                             .tag(2)
                         GraphicView(user: user)
                             .tag(3)
