@@ -11,7 +11,7 @@ import Charts
 struct GraphicView: View {
     @ObservedObject var user: UserModel
     @State private var selectedInterval = "weekly_title"
-    let intervals = ["weekly_title", "yearly_title"]
+    let intervals = ["weekly_title","monthly_title", "yearly_title"]
     @State private var currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
     
     var currentWeekEnd: Date {
@@ -37,34 +37,22 @@ struct GraphicView: View {
                             Text(LocalizedStringKey(interval))
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(SegmentedPickerStyle())
                     
                     if selectedInterval == "weekly_title" {
                         VStack {
-                            HStack {
-                                Button {
-                                    previousWeek()
-                                } label: {
-                                    Image(systemName: "chevron.left")
-                                }
-                                
-                                Text(formattedWeekRange)
-                                    .font(.headline)
-                                
-                                Button {
-                                    nextWeek()
-                                } label: {
-                                    Image(systemName: "chevron.right")
-                                }
-                            }
-                            .padding(.bottom)
                             ZStack{
-                                RoundedRectangle(cornerRadius: 10)
-                                    .foregroundStyle(Color.white)
-                                    .shadow(radius: 10)
-                                    .frame(height: 280)
+//                                RoundedRectangle(cornerRadius: 15)
+//                                    .fill(Color.white)
+//                                    .shadow(radius: 10)
+//                                    .frame(height: 280)
                                 DailyWaterChart(user: user, startDate: currentWeekStart)
-                                
+                            }
+                        }
+                    } else if selectedInterval == "monthly_title"{
+                        VStack {
+                            ZStack {
+                                MothlyWaterChart(user: user, monthStart: Calendar.current.date(from: DateComponents(year: currentYear, month: 4, day: 1))!)
                             }
                         }
                     } else {
@@ -74,38 +62,37 @@ struct GraphicView: View {
                                 
                                 Text(formattedYearRange)
                                     .font(.headline)
+                                    .foregroundColor(.primary)
+                                    .padding(.horizontal)
                                 
                                 Button { nextYear() } label: { Image(systemName: "chevron.right") }
                             }
-                            .padding(.bottom)
+                            .padding(.vertical)
+                            
                             ZStack{
-                                RoundedRectangle(cornerRadius: 10)
-                                    .foregroundStyle(Color.white)
+                                RoundedRectangle(cornerRadius: 15)
+                                    .fill(Color.white)
                                     .shadow(radius: 10)
-                                    .frame(width: 360,height: 280)
+                                    .frame(width: 360, height: 280)
                                 YearlyWaterChart(user: user, year: currentYear)
-                                
                             }
                         }
                     }
-                        Text("\(Text(LocalizedStringKey("bestday"))): \(user.bestDayAmountDate) - \(Int(user.bestDayAmount)) ml 🏆")
-                            .font(.system(size: 17, weight: .bold, design: .rounded))
-                            .foregroundStyle(Color.purple)
-                            .padding()
+                    
+//                    Text("\(Text(LocalizedStringKey("bestday"))): \(user.bestDayAmountDate) - \(Int(user.bestDayAmount)) ml 🏆")
+//                        .font(.system(size: 17, weight: .bold, design: .rounded))
+//                        .foregroundColor(.purple)
+//                        .padding()
+//                        .background(Color.purple.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    
                     Spacer()
                     
                 }
                 .padding()
                 .padding(.top,10)
-                .toolbar{
-                    ToolbarItem(placement: .topBarLeading) {
-                        Text("statistics_title")
-                            .font(.system(size: 30, weight: .bold, design: .rounded))
-                            .padding(.top,15)
-                    }
-                }
+                .navigationTitle(Text("statistics_title"))
+                .background(Color.gray.opacity(0.05).ignoresSafeArea())
             }
-            
         }
     }
     
@@ -154,14 +141,15 @@ struct DailyWaterChart: View {
                 }
             }
         }
+        .chartScrollableAxes(.horizontal)
+        .chartXVisibleDomain(length: 7)
         .frame(height: 230)
-        .chartXAxis {
-            AxisMarks { mark in AxisValueLabel() }
-        }
-        .chartYAxis {
-            AxisMarks { mark in AxisValueLabel()
-            }
-        }
+//        .chartXAxis {
+//            AxisMarks { mark in AxisValueLabel() }
+//        }
+//        .chartYAxis {
+//            AxisMarks { mark in AxisValueLabel() }
+//        }
         .padding()
     }
 
@@ -174,7 +162,7 @@ struct DailyWaterChart: View {
                 let records = user.fetchRecords(for: date)
                 let totalAmount = records.reduce(0) { $0 + $1.amount }
                 let dayName = calendar.shortWeekdaySymbols[calendar.component(.weekday, from: date) - 1]
-                data.append((dayName,totalAmount, date))
+                data.append((dayName, totalAmount, date))
             }
         }
         return data
@@ -215,16 +203,84 @@ struct YearlyWaterChart: View {
         var data: [(String, Double, Date)] = []
         
         for month in 1..<13 {
-            if let date = calendar.date(from: DateComponents(year: year,month: month, day: 1)) {
-                let records = user.fetchRecords(for: date)
+            if let startOfMonth = calendar.date(from: DateComponents(year: year, month: month, day: 1)) {
+                let range = calendar.range(of: .day, in: .month, for: startOfMonth)!
+                _ = calendar.date(byAdding: .day, value: range.count - 1, to: startOfMonth)!
+                
+                let records = user.fetchRecordsForYear(year: year).filter { record in
+                    let recordDate = record.date ?? Date()
+                    return calendar.isDate(recordDate, equalTo: startOfMonth, toGranularity: .month)
+                }
                 let totalAmount = records.reduce(0) { $0 + $1.amount }
-                let monthName = calendar.shortMonthSymbols[calendar.component(.month, from: date) - 1]
-                data.append((monthName, totalAmount, date))
+                
+                let monthName = calendar.shortMonthSymbols[calendar.component(.month, from: startOfMonth) - 1]
+                data.append((monthName, totalAmount, startOfMonth))
             }
         }
         return data
     }
 }
+
+struct MothlyWaterChart: View {
+    @ObservedObject var user: UserModel
+    var monthStart: Date
+    @State private var selectedData: (day: String, amount: Double)?
+    
+    var body: some View {
+        let data = monthlyData()
+        VStack(alignment: .leading) {
+            if let selectedData = selectedData {
+                Text("\(selectedData.day) — \(Int(selectedData.amount)) mL")
+                    .font(.subheadline)
+                    .padding(8)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(8)
+                    .padding(.bottom, 5)
+            }
+
+            Chart {
+                ForEach(data, id: \.date) { dataItem in
+                    BarMark(
+                        x: .value("Day", dataItem.dayName),
+                        y: .value("Amount", dataItem.amount)
+                    )
+                    .foregroundStyle(dataItem.amount >= user.dailyGoal ? Color.green.gradient : Color.blue.gradient)
+                    .cornerRadius(5)
+                }
+            }
+            .chartScrollableAxes(.horizontal)
+            .chartXVisibleDomain(length: 30) // 30 days visible for monthly data
+            .frame(height: 230)
+            .padding()
+        }
+    }
+    
+    func monthlyData() -> [(dayNumber: Int, dayName: String, amount: Double, date: Date)] {
+        let calendar = Calendar.current
+        var data: [(Int, String, Double, Date)] = []
+        
+        guard let range = calendar.range(of: .day, in: .month, for: monthStart) else {
+            return []
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "d"
+        
+        for day in range {
+            if let date = calendar.date(byAdding: .day, value: day - 1, to: monthStart) {
+                let records = user.fetchRecords(for: date)
+                let totalAmount = records.reduce(0) { $0 + $1.amount }
+                let dayName = dateFormatter.string(from: date)
+                
+                data.append((day, dayName, totalAmount, date))
+            }
+        }
+        
+        return data
+    }
+}
+
+
 
 extension Date {
     var startOfWeek: Date? {

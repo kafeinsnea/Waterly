@@ -19,9 +19,12 @@ struct ProfileView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 90, height: 90)
+                        .clipShape(Circle())
                     
                     Text(user.username)
                         .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .lineLimit(1) // Overflowu engellemek için
+                        .minimumScaleFactor(0.5) // Küçük ekranlarda küçülmesi için
                     
                     Spacer()
                     
@@ -40,21 +43,17 @@ struct ProfileView: View {
                 .padding()
                 
                 VStack(spacing: 15) {
-                    ProfileInfoCard(title: "gender_title", value: user.gender.capitalized)
+                    ProfileInfoCard(title: "gender_title", value: user.localizedGender(for: user.gender))
                     ProfileInfoCard(title: "weight_title", value: "\(user.weight) kg")
                     ProfileInfoCard(title: "wakeup_title", value: timeFormatter(user.wakeup))
                     ProfileInfoCard(title: "sleep_title", value: timeFormatter(user.sleep))
                     ProfileInfoCard(title: "goal_title", value: "\(user.dailyGoal) mL")
+                    ProfileInfoCard(title: "sport_title", value:user.localizedSportLevel(for: user.sportLevel))
                 }
-                
                 Spacer()
             }
+            .navigationTitle(Text("profile_title"))
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Text("profile_title")
-                        .font(.system(size: 30, weight: .bold, design: .rounded))
-                        .padding(.top,15)
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: SettingsView(user: user)) {
                         Image(systemName: "gearshape.fill")
@@ -71,10 +70,9 @@ struct ProfileView: View {
     func timeFormatter(_ date: Date) -> String {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
-        formatter.timeZone = TimeZone.current 
+        formatter.timeZone = TimeZone.current
         return formatter.string(from: date)
     }
-
 }
 
 struct ProfileInfoCard: View {
@@ -84,11 +82,11 @@ struct ProfileInfoCard: View {
     var body: some View {
         HStack {
             Text(LocalizedStringKey(title))
-                .font(.system(size: 21, weight: .bold, design: .rounded))
+                .font(.system(size: 19, weight: .bold, design: .rounded))
             Spacer()
             Text(value)
-                .font(.system(size: 20, weight: .regular, design: .rounded))
-                .foregroundStyle(Color.blue)
+                .font(.system(size: 18, weight: .regular, design: .rounded))
+                .foregroundStyle(Color(#colorLiteral(red: 0.01568627451, green: 0.4, blue: 0.7843137255, alpha: 1)))
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 15).fill(Color.gray.opacity(0.1)).shadow(radius: 5))
@@ -106,6 +104,7 @@ struct ProfileEditView: View {
     @State private var tempDailyGoal: Double
     @State private var tempWakeup: Date
     @State private var tempSleep: Date
+    @State private var tempSportLevel: String
     
     init(user: UserModel) {
         self.user = user
@@ -115,6 +114,7 @@ struct ProfileEditView: View {
         _tempDailyGoal = State(initialValue: user.dailyGoal)
         _tempWakeup = State(initialValue: user.wakeup)
         _tempSleep = State(initialValue: user.sleep)
+        _tempSportLevel = State(initialValue: user.sportLevel)
     }
     
     var body: some View {
@@ -127,7 +127,6 @@ struct ProfileEditView: View {
                         Spacer()
                         TextField("Enter name", text: $tempUsername)
                             .multilineTextAlignment(.leading)
-                            .frame(width: 150)
                             .padding(10)
                             .background(Color(.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -138,7 +137,7 @@ struct ProfileEditView: View {
                             .font(.headline)
                         Spacer()
                         Picker("gender_title", selection: $tempGender) {
-                            Text("male_title").tag("male")
+                            Text(NSLocalizedString("male_title", comment: "")).tag("male")
                             Text("female_title").tag("female")
                         }
                         .pickerStyle(SegmentedPickerStyle())
@@ -173,6 +172,19 @@ struct ProfileEditView: View {
                         Spacer()
                         DatePicker("", selection: $tempSleep, displayedComponents: .hourAndMinute)
                             .labelsHidden()
+                    }
+                    HStack {
+                        Text("sport_title")
+                            .font(.headline)
+                        Spacer()
+                        Picker("sport_title", selection: $tempSportLevel) {
+                            Text("none_title").tag("none")
+                            Text("light_title").tag("light")
+                            Text("moderate_title").tag("moderate")
+                            Text("intense_title").tag("intense")
+                        }
+                        .pickerStyle(.menu)
+                        .frame(width: 180)
                     }
                 }
                 .padding()
@@ -210,10 +222,15 @@ struct ProfileEditView: View {
         user.username = tempUsername
         user.gender = tempGender
         user.weight = tempWeight
-        user.dailyGoal = tempDailyGoal
+//        user.dailyGoal = tempDailyGoal
         user.wakeup = tempWakeup
         user.sleep = tempSleep
-        user.calculateDailyGoal()
+        user.sportLevel = tempSportLevel
+        if user.dailyGoal != tempDailyGoal{
+            user.dailyGoal = tempDailyGoal
+        }else{
+            user.calculateDailyGoal()
+        }
         user.saveUserData()
         dismiss()
     }

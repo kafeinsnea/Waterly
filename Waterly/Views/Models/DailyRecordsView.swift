@@ -19,22 +19,22 @@ struct DailyRecordsView: View {
         let filteredRecords = user.fetchRecords(for: filterDate)
             .sorted(by: {$0.date ?? Date() > $1.date ?? Date() })
         ScrollView {
-            VStack(spacing: -40) {  
+            VStack(spacing: -40) {
                 ForEach(filteredRecords, id: \.self) { record in
                     ZStack {
                         HStack {
                             Image(systemName: "drop.fill")
-                                .font(.title2)
+                                .font(.title3)
                                 .bold()
                                 .foregroundStyle(Color.blue)
                             
                             VStack(alignment: .leading) {
                                 Text("\(Int(record.amount)) mL")
-                                    .font(.system(size: 21, weight: .bold, design: .rounded))
+                                    .font(.system(size: 19, weight: .medium, design: .rounded))
                                     .foregroundStyle(.primary)
                                 
                                 Text(record.date?.formatted(date: .omitted, time: .shortened) ?? "Unknown time")
-                                    .font(.system(size: 16, weight: .medium, design: .rounded))
+                                    .font(.system(size: 13, weight: .medium, design: .rounded))
                                     .foregroundStyle(.gray)
                             }
                             .padding()
@@ -45,9 +45,9 @@ struct DailyRecordsView: View {
                                 selectedRecord = record
                                 showDeleteConfirmation = true
                             } label: {
-                                Image(systemName: "ellipsis")
-                                    .font(.title2)
-                                    .foregroundStyle(.black)
+                                Image(systemName: "trash")
+                                    .font(.title3)
+                                    .foregroundStyle(.red)
                             }
                         }
                     }

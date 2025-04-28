@@ -50,15 +50,16 @@ struct SettingsView: View {
             .task {
                 await requestNotificationPermission()
             }
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("settings_title")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundColor(.primary)
-                        .padding(.top, 13)
-                }
-            }
-            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
+            .navigationTitle(Text("settings_title"))
+//            .toolbar {
+//                ToolbarItem(placement: .principal) {
+//                    Text("settings_title")
+//                        .font(.system(size: 28, weight: .bold, design: .rounded))
+//                        .foregroundColor(.primary)
+//                        .padding(.top, 13)
+//                }
+//            }
+//            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .alert("delete_confirmation", isPresented: $isShowingDeleteConfirmation) {
                 Button("cancel", role: .cancel) {}
                 Button("delete", role: .destructive) {

@@ -10,7 +10,7 @@ import CoreData
 
 enum sportLevel: String, CaseIterable {
     case none = "none"
-    case light = "low"
+    case light = "light"
     case moderate = "moderate"
     case intense = "intense"
 }
@@ -21,23 +21,22 @@ class UserModel: ObservableObject {
     @Published var waterConsumed: Double = 0.0
     @Published var progressPercentage: Int = 0
     @Published var lastUpdated: Date = Date()
-    @Published var gender: String = "female_title" {
+    @Published var gender: String = "female" {
         didSet {
             updateProfileImage()
             print("Gender changed to: \(gender)")
         }
     }
     @Published var profileImage: String = "female"
-
     @Published var weight: Int = 0
     @Published var wakeup: Date = Date()
     @Published var sleep: Date = Date()
-    @Published var sportLevel: String = "none"
+    @Published var sportLevel: String = ""
     
     private func updateProfileImage() {
         profileImage = (gender == "female") ? "female" : "male"
     }
-
+    
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext) {
@@ -64,24 +63,24 @@ class UserModel: ObservableObject {
                 self.lastUpdated = userGoal.lastUpdated ?? Date()
                 self.gender = userGoal.gender ?? ""
                 self.weight = Int(userGoal.weight)
-
+                
                 // 🌍 UTC'yi yerel saate çevirerek al
                 self.wakeup = convertToLocal(date: userGoal.wakeup ?? Date())
                 self.sleep = convertToLocal(date: userGoal.sleep ?? Date())
-
+                
                 checkAndResetForNewDay()
             }
         } catch {
             print("Error fetching user data: \(error)")
         }
     }
-
+    
     // 📌 Tarihi yerel saate çeviren fonksiyon
     func convertToLocal(date: Date) -> Date {
         let timezoneOffset = TimeInterval(TimeZone.current.secondsFromGMT(for: date))
         return date.addingTimeInterval(timezoneOffset)
     }
-
+    
     
     // Kullanıcı verilerini Core Data'ya kaydeder
     func saveUserData() {
@@ -104,11 +103,11 @@ class UserModel: ObservableObject {
             userGoal.lastUpdated = Date()
             userGoal.gender = gender
             userGoal.weight = Int64(weight)
-
+            
             // 🌍 Yerel zamanı UTC'ye çevirerek kaydet
             userGoal.wakeup = convertToUTC(date: wakeup)
             userGoal.sleep = convertToUTC(date: sleep)
-
+            
             if context.hasChanges {
                 try context.save()
             }
@@ -116,56 +115,58 @@ class UserModel: ObservableObject {
             print("Error saving user data: \(error)")
         }
     }
-
+    
     // 📌 Tarihi UTC'ye çeviren fonksiyon
     func convertToUTC(date: Date) -> Date {
         let timezoneOffset = TimeInterval(TimeZone.current.secondsFromGMT(for: date))
         return date.addingTimeInterval(-timezoneOffset)
     }
-
-
-
+    
+    
+    
     
     // Su tüketimini kaydeder
     func addWater(amount: Double) {
         waterConsumed += amount
         saveUserData()
         addWaterRecord(amount: amount)
+        updateProgress()
     }
-
+    
     func removeLastAddedWater() {
-          let records = fetchRecords(for: Date())
-          
-          guard let lastRecord = records.last else { return }
-          deleteRecord(lastRecord)
-      }
+        let records = fetchRecords(for: Date())
+        
+        guard let lastRecord = records.last else { return }
+        deleteRecord(lastRecord)
+        updateProgress()
+    }
     
     func deleteRecord(_ record: WaterRecord){
         guard let context = record.managedObjectContext else { return }
         waterConsumed -= record.amount
         context.delete(record)
         do {
-               if context.hasChanges {
-                   try context.save()
-               }
-           } catch {
-               print("Error deleting record: \(error)")
-           }
+            if context.hasChanges {
+                try context.save()
+            }
+        } catch {
+            print("Error deleting record: \(error)")
+        }
     }
     // WaterRecord kaydı ekler
-       func addWaterRecord(amount: Double) {
-           let record = WaterRecord(context: context)
-           record.amount = amount
-           record.date = Date()
-           
-           do {
-               if context.hasChanges {
-                   try context.save()
-               }
-           } catch {
-               print("Error saving water record: \(error)")
-           }
-       }
+    func addWaterRecord(amount: Double) {
+        let record = WaterRecord(context: context)
+        record.amount = amount
+        record.date = Date()
+        
+        do {
+            if context.hasChanges {
+                try context.save()
+            }
+        } catch {
+            print("Error saving water record: \(error)")
+        }
+    }
     
     func checkAndResetForNewDay() {
         let calendar = Calendar.current
@@ -187,7 +188,7 @@ class UserModel: ObservableObject {
         progressPercentage = 0
         saveUserData()
     }
-        
+    
     func fetchRecords(for date: Date) -> [WaterRecord]{
         let request: NSFetchRequest<WaterRecord> = WaterRecord.fetchRequest()
         let calendar = Calendar.current
@@ -203,6 +204,24 @@ class UserModel: ObservableObject {
             return []
         }
     }
+    // Haftalık değil, yıllık veri çekmek için fonksiyonu değiştirelim
+    func fetchRecordsForYear(year: Int) -> [WaterRecord] {
+        let request: NSFetchRequest<WaterRecord> = WaterRecord.fetchRequest()
+        let calendar = Calendar.current
+        
+        let startOfYear = calendar.date(from: DateComponents(year: year, month: 1, day: 1))!
+        let endOfYear = calendar.date(from: DateComponents(year: year, month: 12, day: 31))!
+        
+        request.predicate = NSPredicate(format: "date >= %@ AND date <= %@", startOfYear as NSDate, endOfYear as NSDate)
+        
+        do {
+            return try context.fetch(request)
+        } catch {
+            print("Error fetching water records for year \(year): \(error)")
+            return []
+        }
+    }
+    
     func deleteAllData() {
         let fetchRequests: [NSFetchRequest<NSFetchRequestResult>] = [
             WaterGoal.fetchRequest(),
@@ -227,7 +246,7 @@ class UserModel: ObservableObject {
             print("❌ Error deleting all data: \(error)")
         }
     }
-
+    
     private func resetUserDefaults() {
         username = ""
         dailyGoal = 2000.0
@@ -290,7 +309,7 @@ class UserModel: ObservableObject {
         var newDailyGoal = Double(weight) * baseMultiplier
         
         switch sportLevel {
-            case "none":
+        case "none":
             newDailyGoal += 0
         case "low":
             newDailyGoal += 300
@@ -305,6 +324,28 @@ class UserModel: ObservableObject {
         dailyGoal = max(1500, min(newDailyGoal,4000))
         
     }
-    
-    
-   }
+    func localizedGender(for gender: String) -> String {
+        switch gender {
+        case "male":
+            return NSLocalizedString("male_title", comment: "")
+        case "female":
+            return NSLocalizedString("female_title", comment: "")
+        default:
+            return ""
+        }
+    }
+    func localizedSportLevel(for level: String) -> String {
+        switch level {
+        case "none":
+            return NSLocalizedString("none_title", comment: "")
+        case "light":
+            return NSLocalizedString("light_title", comment: "")
+        case "moderate":
+            return NSLocalizedString("moderate_title", comment: "")
+        case "intense":
+            return NSLocalizedString("intense_title", comment: "")
+        default:
+            return NSLocalizedString("none_title", comment: "")
+        }
+    }
+}

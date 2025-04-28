@@ -31,10 +31,16 @@
 "username_title" = "Username";
 "save_title" = "Save";
 "edit_profile" = "Edit Profile";
+"sport_title" = "Sport Level";
+"none_title" = "None";
+"light_title" = "Light";
+"moderate_title" = "Moderate";
+"intense_title" = "Intense";
 
 //graphicview
 "statistics_title" = "Statistics";
 "weekly_title" = "Weekly";
+"monthly_title" = "Monthly";
 "yearly_title" = "Yearly";
 "dailygoal" = "Daily Goal";
 "bestday" = "Your Best Day";

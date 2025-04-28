@@ -85,7 +85,8 @@ struct GenderQuestionView: View {
             HStack(spacing: 55) {
                 Button{
                     selectedGender = .female
-                    user.gender = "Female"
+                    user.gender = "female"
+                    user.profileImage = "female"
                 }label: {
                     ZStack {
                         Circle()
@@ -98,7 +99,8 @@ struct GenderQuestionView: View {
                 }
                 Button{
                     selectedGender = .male
-                    user.gender = "Male"
+                    user.gender = "male"
+                    user.profileImage = "male"
                 }label: {
                     ZStack {
                         Circle()
@@ -293,7 +295,7 @@ struct SportQuestionView: View {
             VStack(spacing: 20) {
                 ForEach(sportLevel.allCases, id: \.self) { level in
                     Button {
-                        user.sportLevel = level.rawValue
+                        user.sportLevel = level.rawValue.lowercased()
                     } label: {
                         Text(level.rawValue)
                             .font(.system(size: 20, weight: .bold, design: .rounded))

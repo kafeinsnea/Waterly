@@ -91,18 +91,10 @@ struct HydrationView: View {
                         }
                         .padding(.horizontal, 20)
                         .padding(.top,40)
-                        //                                                                            Button( "Reset Progress") {
-                        //                                                                                user.resetProgress()
-                        //                                                                            }
+                                                               
                     }
                 }
-                .toolbar{
-                    ToolbarItem(placement: .topBarLeading) {
-                        Text("hydration")
-                            .font(.system(size: 30, weight: .bold, design: .rounded))
-                            .padding(.top,15)
-                    }
-                }
+                .navigationTitle(Text("hydration"))
             }
             Spacer().frame(height: 100)
             

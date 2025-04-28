@@ -12,68 +12,69 @@ struct SwitchCupView: View {
     @Binding var selectedCupSize: Int?
     @Environment(\.dismiss) var dismiss
     var isDisabled: Bool = false
+    @State private var tempSelectedCup: Int?
 
     let cupSizes: [Int] = [150, 250, 350,500,1000]
 
     var body: some View {
-        VStack {
-            HStack {
-                Button(action: { dismiss() }) {
-                    Image(systemName: "xmark")
-                        .foregroundColor(.black)
-                        .bold()
-                        .padding()
+        GeometryReader{ geometry in
+            VStack {
+                HStack {
+                    Button(action: { dismiss() }) {
+                        Image(systemName: "xmark")
+                            .foregroundColor(.black)
+                            .bold()
+                            .padding()
+                    }
+                    Spacer()
                 }
-                Spacer()
-            }
-            
-            Text("Switch Cup")
-                .font(.system(size: 20, weight: .bold, design: .rounded))
-                .padding(.bottom, 10)
-
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 4), spacing: 20) {
-                ForEach(cupSizes, id: \.self) { size in
-                    Button(action: {
-                        selectedCupSize = size
-                        user.addWater(amount: Double(size))
-                    }) {
-                        VStack {
-                            getCupIcon(for: size)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 45, height: 45)
-                            
-                            Text("\(size) mL")
-                                .font(.system(size: 12, weight: .bold, design: .rounded))
-                            .foregroundColor(selectedCupSize == size ? .white : .black)
+                
+                Text("Add")
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 10) {
+                    ForEach(cupSizes, id: \.self) { size in
+                        Button(action: {
+                            tempSelectedCup = size
+                        }) {
+                            HStack {
+                                getCupIcon(for: size)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 45, height: 45)
+                                
+                                Text("\(size) mL")
+                                    .font(.system(size: 12, weight: .bold, design: .rounded))
+                                    .foregroundColor(selectedCupSize == size ? .white : .black)
+                            }
+                            .frame(width: geometry.size.width/3.5, height: geometry.size.width/5.5)
+                            .background(RoundedRectangle(cornerRadius: 15).fill(tempSelectedCup == size ? Color.blue : Color.blue.opacity(0.2)))
                         }
-                        .padding()
-                        .background(RoundedRectangle(cornerRadius: 15).fill(selectedCupSize == size ? Color.blue : Color.blue.opacity(0.2)))
                     }
                 }
+                .padding(.vertical)
+                .frame(height:geometry.size.height*0.5)
+                
+                Button{
+                    if let selectedSize = tempSelectedCup{
+                        selectedCupSize = selectedSize
+                        user.addWater(amount: Double(selectedSize))
+                        user.saveUserData()
+                    }
+                    dismiss()
+                }label: {
+                    Text("OK")
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background((tempSelectedCup == nil || isDisabled) ?  Color.gray : Color.blue)
+                        .foregroundColor(.white)
+                        .cornerRadius(15)
+                }
+                .disabled(tempSelectedCup == nil || isDisabled)
             }
             .padding()
-
-            Button{
-                user.saveUserData()
-                dismiss()
-            }label: {
-                Text("OK")
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(isDisabled ?  Color.gray : Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(15)
-                    .padding(.horizontal)
+            .onDisappear{
+                selectedCupSize = nil
             }
-            .disabled(isDisabled)
-            
-         
-            
-        }
-        .padding()
-        .onDisappear{
-            selectedCupSize = nil
         }
     }
 

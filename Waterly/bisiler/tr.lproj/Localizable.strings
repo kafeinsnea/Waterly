@@ -31,10 +31,16 @@
 "username_title" = "Kullanıcı adı";
 "save_title" = "Kaydet";
 "edit_profile" = "Profili Düzenle";
+"sport_title" = "Spor Seviyesi";
+"none_title" = "Yok";
+"light_title" = "Hafif";
+"moderate_title" = "Orta";
+"intense_title" = "Yoğun";
 
 //graphicview
 "statistics_title" = "İstatistikler";
 "weekly_title" = "Haftalık";
+"monthly_title" = "Aylık";
 "yearly_title" = "Yıllık";
 "dailygoal" = "Günlük Hedef";
 "bestday" = "En İyi Günün";
