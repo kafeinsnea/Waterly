@@ -147,7 +147,7 @@ private func settingsToggle(icon: String, text: String, toggleBinding: Binding<B
             .resizable()
             .scaledToFit()
             .frame(width: 28, height: 28)
-            .foregroundColor(.accentColor)
+            .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
             .padding(10)
         Text(LocalizedStringKey(text))
             .font(.system(size: 18, weight: .medium, design: .rounded))
@@ -168,7 +168,7 @@ private func settingsRow(icon: String, text: String, action: @escaping () -> Voi
             .resizable()
             .scaledToFit()
             .frame(width: 28, height: 28)
-            .foregroundColor(.accentColor)
+            .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
             .padding(10)
         Text(LocalizedStringKey(text))
             .font(.system(size: 18, weight: .medium, design: .rounded))
@@ -177,7 +177,7 @@ private func settingsRow(icon: String, text: String, action: @escaping () -> Voi
         Button(action: action) {
             Image(systemName: "chevron.right")
                 .font(.system(size: 18, weight: .medium))
-                .foregroundColor(.blue)
+                .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
                 .padding(8)
         }
     }
@@ -187,7 +187,7 @@ private func settingsRow(icon: String, text: String, action: @escaping () -> Voi
 extension View {
     func settingsCard() -> some View {
         self
-            .background(RoundedRectangle(cornerRadius: 15).fill(Color.gray.opacity(0.1)).shadow(radius: 5))
+            .background(RoundedRectangle(cornerRadius: 15).fill(Color("infoCard")))
             .padding([.leading, .trailing])
             .padding(.vertical, 10)
     }

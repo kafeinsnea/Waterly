@@ -52,30 +52,29 @@ struct GraphicView: View {
                     } else if selectedInterval == "monthly_title"{
                         VStack {
                             ZStack {
-                                MothlyWaterChart(user: user, monthStart: Calendar.current.date(from: DateComponents(year: currentYear, month: 4, day: 1))!)
+                                MonthlyWaterChart(user: user, monthStart: Calendar.current.date(from: DateComponents(year: currentYear, month: 4, day: 1))!)
                             }
                         }
                     } else {
                         VStack {
                             HStack {
-                                Button { previousYear()} label: { Image(systemName:"chevron.left") }
+                                Button { previousYear()} label: { Image(systemName:"chevron.left")
+                                        .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
+                                }
                                 
                                 Text(formattedYearRange)
                                     .font(.headline)
                                     .foregroundColor(.primary)
                                     .padding(.horizontal)
                                 
-                                Button { nextYear() } label: { Image(systemName: "chevron.right") }
+                                Button { nextYear() } label: { Image(systemName: "chevron.right")
+                                        .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
+                                }
                             }
                             .padding(.vertical)
                             
-                            ZStack{
-                                RoundedRectangle(cornerRadius: 15)
-                                    .fill(Color.white)
-                                    .shadow(radius: 10)
-                                    .frame(width: 360, height: 280)
                                 YearlyWaterChart(user: user, year: currentYear)
-                            }
+                           
                         }
                     }
                     
@@ -141,7 +140,7 @@ struct DailyWaterChart: View {
                 }
             }
         }
-        .chartScrollableAxes(.horizontal)
+//        .chartScrollableAxes(.horizontal)
         .chartXVisibleDomain(length: 7)
         .frame(height: 230)
 //        .chartXAxis {
@@ -185,16 +184,16 @@ struct YearlyWaterChart: View {
             }
         }
         .frame(height: 230)
-        .chartXAxis {
-            AxisMarks { mark in
-                AxisValueLabel()
-            }
-        }
-        .chartYAxis {
-            AxisMarks { mark in
-                AxisValueLabel()
-            }
-        }
+//        .chartXAxis {
+//            AxisMarks { mark in
+//                AxisValueLabel()
+//            }
+//        }
+//        .chartYAxis {
+//            AxisMarks { mark in
+//                AxisValueLabel()
+//            }
+//        }
         .padding()
     }
     
@@ -221,7 +220,7 @@ struct YearlyWaterChart: View {
     }
 }
 
-struct MothlyWaterChart: View {
+struct MonthlyWaterChart: View {
     @ObservedObject var user: UserModel
     var monthStart: Date
     @State private var selectedData: (day: String, amount: Double)?
@@ -229,57 +228,52 @@ struct MothlyWaterChart: View {
     var body: some View {
         let data = monthlyData()
         VStack(alignment: .leading) {
-            if let selectedData = selectedData {
-                Text("\(selectedData.day) — \(Int(selectedData.amount)) mL")
-                    .font(.subheadline)
-                    .padding(8)
-                    .background(Color.gray.opacity(0.2))
-                    .cornerRadius(8)
-                    .padding(.bottom, 5)
-            }
-
             Chart {
                 ForEach(data, id: \.date) { dataItem in
                     BarMark(
-                        x: .value("Day", dataItem.dayName),
+                        x: .value("Day", dataItem.dayNumber),
                         y: .value("Amount", dataItem.amount)
                     )
                     .foregroundStyle(dataItem.amount >= user.dailyGoal ? Color.green.gradient : Color.blue.gradient)
                     .cornerRadius(5)
                 }
             }
-            .chartScrollableAxes(.horizontal)
-            .chartXVisibleDomain(length: 30) // 30 days visible for monthly data
+            .chartXAxis{
+                AxisMarks(values: [7,14,21,28]) { value in
+                    AxisGridLine()
+                    AxisTick()
+                    AxisValueLabel{
+                        if let intVal = value.as(Int.self){
+                            Text("\(intVal)")
+                        }
+                    }
+                }
+            }
+            .chartXVisibleDomain(length: 30)
             .frame(height: 230)
             .padding()
         }
     }
     
-    func monthlyData() -> [(dayNumber: Int, dayName: String, amount: Double, date: Date)] {
+    func monthlyData() -> [(dayNumber: Int, amount: Double, date: Date)] {
         let calendar = Calendar.current
-        var data: [(Int, String, Double, Date)] = []
+        var data: [(Int, Double, Date)] = []
         
-        guard let range = calendar.range(of: .day, in: .month, for: monthStart) else {
-            return []
-        }
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "d"
+        guard let range = calendar.range(of: .day, in: .month, for: monthStart) else { return [] }
         
         for day in range {
             if let date = calendar.date(byAdding: .day, value: day - 1, to: monthStart) {
                 let records = user.fetchRecords(for: date)
                 let totalAmount = records.reduce(0) { $0 + $1.amount }
-                let dayName = dateFormatter.string(from: date)
                 
-                data.append((day, dayName, totalAmount, date))
+                data.append((day, totalAmount, date))
             }
         }
         
         return data
     }
+    
 }
-
 
 
 extension Date {

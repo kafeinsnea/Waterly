@@ -23,7 +23,7 @@
 "profile_title" = "Profile";
 "gender_title" = "Gender";
 "weight_title" = "Weight";
-"wakeup_title" = "Wake-up title";
+"wakeup_title" = "Wake-up time";
 "sleep_title" = "Sleep time";
 "goal_title" =  "Goal";
 "male_title" = "Male";

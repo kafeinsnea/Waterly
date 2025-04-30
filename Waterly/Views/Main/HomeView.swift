@@ -27,28 +27,29 @@ struct HomeView: View {
             ZStack {
                 VStack(spacing: 9) {
                     Text("Today's Goal")
+                        .font(.system(size: 17, weight: .medium, design: .rounded))
                     Text("\(Int(user.dailyGoal))")
                         .font(.system(size: 23, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color("yazıRengi"))
                         .padding(.bottom)
 
                     ZStack {
                         Circle()
-                            .stroke(Color.gray.opacity(0.2), lineWidth: 16)
+                            .stroke(Color("grayStroke").opacity(0.7), lineWidth: 16)
                         
                         Circle()
                             .trim(from: 0.0, to: progress)
-                            .stroke(Color(#colorLiteral(red: 0.1137254902, green: 0.2078431373, blue: 0.3411764706, alpha: 1)),style: StrokeStyle(lineWidth: 15, lineCap: .round))
-                            .stroke(Color.yellow,style: StrokeStyle(lineWidth: 15, lineCap: .round))
+                            .stroke(Color("tamamlanan"),style: StrokeStyle(lineWidth: 15, lineCap: .round))
                             .rotationEffect(.degrees(-90))
                             .animation(.easeInOut(duration: 0.5), value: progress)
                         
                         VStack {
                             Text("\(user.progressPercentage)%")
-                                .font(.system(size: 30, weight: .bold, design: .rounded))
-                                .foregroundStyle(Color(#colorLiteral(red: 0.1137254902, green: 0.2078431373, blue: 0.3411764706, alpha: 1)))
+                                .font(.system(size: 31, weight: .bold, design: .rounded))
+                                .foregroundStyle(Color("yazıRengi"))
                             Text("\(Int(user.waterConsumed)) mL Drunk")
                                 .font(.system(size: 18, weight: .medium, design: .rounded))
-                                .italic()
+                                .foregroundStyle(Color("yazıRengi"))
                         }
                     }
                     .frame(width: 180, height: 180)
@@ -60,7 +61,7 @@ struct HomeView: View {
                             Image(systemName: "plus")
                                 .font(.system(size: 20,weight: .bold))
                                 .frame(width: 60, height: 60)
-                                .background(Color.blue)
+                                .background(Color("button"))
                                 .foregroundColor(.white)
                                 .clipShape(Circle())
                                 .shadow(color: .gray.opacity(0.4), radius: 10,x:0,y:4)
@@ -100,7 +101,7 @@ struct HomeView: View {
                     VStack(spacing: -8) {
                         Text("todays_records")
                             .font(.system(size: 25, weight: .bold, design: .rounded))
-                            .foregroundStyle(Color(#colorLiteral(red: 0.1137254902, green: 0.2078431373, blue: 0.3411764706, alpha: 1)))
+                            .foregroundStyle(Color("başlık"))
                             .frame(maxWidth:360, alignment: .leading)
                         
                         DailyRecordsView(user: user, filterDate: Date())

@@ -22,7 +22,7 @@ struct SwitchCupView: View {
                 HStack {
                     Button(action: { dismiss() }) {
                         Image(systemName: "xmark")
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .bold()
                             .padding()
                     }
@@ -44,10 +44,10 @@ struct SwitchCupView: View {
                                 
                                 Text("\(size) mL")
                                     .font(.system(size: 12, weight: .bold, design: .rounded))
-                                    .foregroundColor(selectedCupSize == size ? .white : .black)
+                                    .foregroundColor(.black)
                             }
                             .frame(width: geometry.size.width/3.5, height: geometry.size.width/5.5)
-                            .background(RoundedRectangle(cornerRadius: 15).fill(tempSelectedCup == size ? Color.blue : Color.blue.opacity(0.2)))
+                            .background(RoundedRectangle(cornerRadius: 15).fill(tempSelectedCup == size ? Color("cupColor") : Color("cupColor2")))
                         }
                     }
                 }
@@ -65,8 +65,8 @@ struct SwitchCupView: View {
                     Text("OK")
                         .padding()
                         .frame(maxWidth: .infinity)
-                        .background((tempSelectedCup == nil || isDisabled) ?  Color.gray : Color.blue)
-                        .foregroundColor(.white)
+                        .background((tempSelectedCup == nil || isDisabled) ?  Color.gray.opacity(0.5) : Color("myRed"))
+                        .foregroundColor(.primary)
                         .cornerRadius(15)
                 }
                 .disabled(tempSelectedCup == nil || isDisabled)

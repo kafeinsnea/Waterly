@@ -23,6 +23,7 @@ struct ProfileView: View {
                     
                     Text(user.username)
                         .font(.system(size: 24, weight: .bold, design: .rounded))
+                        .foregroundStyle(Color("yazıRengi"))
                         .lineLimit(1) // Overflowu engellemek için
                         .minimumScaleFactor(0.5) // Küçük ekranlarda küçülmesi için
                     
@@ -34,6 +35,7 @@ struct ProfileView: View {
                         Image(systemName: "pencil.line")
                             .resizable()
                             .frame(width: 24, height: 24)
+                            .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
                     }
                     .sheet(isPresented: $isEditing) {
                         ProfileEditView(user: user)
@@ -60,6 +62,7 @@ struct ProfileView: View {
                             .font(.title3)
                             .padding(.top,15)
                             .padding()
+                            .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
                     }
                 }
             }
@@ -83,13 +86,14 @@ struct ProfileInfoCard: View {
         HStack {
             Text(LocalizedStringKey(title))
                 .font(.system(size: 19, weight: .bold, design: .rounded))
+                .foregroundStyle(Color("yazıRengi"))
             Spacer()
             Text(value)
-                .font(.system(size: 18, weight: .regular, design: .rounded))
-                .foregroundStyle(Color(#colorLiteral(red: 0.01568627451, green: 0.4, blue: 0.7843137255, alpha: 1)))
+                .font(.system(size: 18, weight: .bold, design: .rounded))
+                .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
         }
         .padding()
-        .background(RoundedRectangle(cornerRadius: 15).fill(Color.gray.opacity(0.1)).shadow(radius: 5))
+        .background(RoundedRectangle(cornerRadius: 15).fill(Color("infoCard")))
         .padding(.horizontal)
     }
 }
@@ -123,18 +127,19 @@ struct ProfileEditView: View {
                 VStack(spacing: 15) {
                     HStack {
                         Text("username_title")
-                            .font(.headline)
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
                         Spacer()
                         TextField("Enter name", text: $tempUsername)
                             .multilineTextAlignment(.leading)
                             .padding(10)
                             .background(Color(.systemGray6))
                             .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .frame(width: 180, height: 10)
                     }
                     
                     HStack {
                         Text("gender_title")
-                            .font(.headline)
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
                         Spacer()
                         Picker("gender_title", selection: $tempGender) {
                             Text(NSLocalizedString("male_title", comment: "")).tag("male")
@@ -146,21 +151,21 @@ struct ProfileEditView: View {
                     
                     HStack {
                         Text("weight_title")
-                            .font(.headline)
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
                         Spacer()
                         Stepper("\(tempWeight) kg", value: $tempWeight, in: 30...200, step: 1)
                     }
                     
                     HStack {
                         Text("goal_title")
-                            .font(.headline)
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
                         Spacer()
                         Stepper("\(Int(tempDailyGoal)) mL", value: $tempDailyGoal, in: 500...5000, step: 50)
                     }
                     
                     HStack {
                         Text("wakeup_title")
-                            .font(.headline)
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
                         Spacer()
                         DatePicker("", selection: $tempWakeup, displayedComponents: .hourAndMinute)
                             .labelsHidden()
@@ -168,14 +173,14 @@ struct ProfileEditView: View {
                     
                     HStack {
                         Text("sleep_title")
-                            .font(.headline)
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
                         Spacer()
                         DatePicker("", selection: $tempSleep, displayedComponents: .hourAndMinute)
                             .labelsHidden()
                     }
                     HStack {
                         Text("sport_title")
-                            .font(.headline)
+                            .font(.system(size: 17, weight: .bold, design: .rounded))
                         Spacer()
                         Picker("sport_title", selection: $tempSportLevel) {
                             Text("none_title").tag("none")
@@ -188,17 +193,17 @@ struct ProfileEditView: View {
                     }
                 }
                 .padding()
-                .background(RoundedRectangle(cornerRadius: 15).fill(Color.white).shadow(radius: 5))
+                .background(RoundedRectangle(cornerRadius: 15).fill(Color("infoCard")))
                 .padding(.horizontal)
                 
                 HStack(spacing: 20) {
                     Button(action: { dismiss() }) {
                         Text("cancel")
-                            .foregroundColor(.red)
+                            .foregroundStyle(Color("myRed"))
                             .font(.headline)
                             .frame(maxWidth: .infinity)
                             .padding()
-                            .background(RoundedRectangle(cornerRadius: 15).stroke(Color.red, lineWidth: 2))
+                            .background(RoundedRectangle(cornerRadius: 15).stroke(Color("myRed"), lineWidth: 2))
                     }
                     
                     Button(action: saveChanges) {

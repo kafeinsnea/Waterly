@@ -26,12 +26,12 @@ struct DailyRecordsView: View {
                             Image(systemName: "drop.fill")
                                 .font(.title3)
                                 .bold()
-                                .foregroundStyle(Color.blue)
+                                .foregroundStyle(Color("button"))
                             
                             VStack(alignment: .leading) {
                                 Text("\(Int(record.amount)) mL")
                                     .font(.system(size: 19, weight: .medium, design: .rounded))
-                                    .foregroundStyle(.primary)
+                                    .foregroundStyle(Color("yazıRengi"))
                                 
                                 Text(record.date?.formatted(date: .omitted, time: .shortened) ?? "Unknown time")
                                     .font(.system(size: 13, weight: .medium, design: .rounded))
@@ -46,8 +46,8 @@ struct DailyRecordsView: View {
                                 showDeleteConfirmation = true
                             } label: {
                                 Image(systemName: "trash")
-                                    .font(.title3)
-                                    .foregroundStyle(.red)
+                                    .font(.system(size: 19, weight: .medium, design: .rounded))
+                                    .foregroundStyle(Color("myRed"))
                             }
                         }
                     }
