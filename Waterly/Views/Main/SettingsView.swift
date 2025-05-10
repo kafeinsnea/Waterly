@@ -7,6 +7,7 @@ struct SettingsView: View {
     @AppStorage("isReminderEnabled") private var isReminderEnabled: Bool = false
     @State private var isShowingDeleteConfirmation: Bool = false
     @StateObject var languageManager = LanguageManager()
+    @State private var isShowingPrivacyPolicy: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -37,7 +38,7 @@ struct SettingsView: View {
                     }
                     Divider()
                     settingsRow(icon: "shield", text: "privacy_policy") {
-                        PrivacyPolicyView()
+                        isShowingPrivacyPolicy = true
                     }
                     Divider()
                     settingsRow(icon: "globe", text: "change_language") {
@@ -67,6 +68,9 @@ struct SettingsView: View {
                 }
             } message: {
                 Text("delete_message")
+            }
+            .sheet(isPresented: $isShowingPrivacyPolicy) {
+                PrivacyPolicyView()
             }
         }
     }

@@ -1,5 +1,5 @@
 //
-//  GraphicView2.swift
+//  GraphicView.swift
 //  Waterly
 //
 //  Created by Sena Çırak on 9.01.2025.
@@ -13,15 +13,6 @@ struct GraphicView: View {
     @State private var selectedInterval = "weekly_title"
     let intervals = ["weekly_title","monthly_title", "yearly_title"]
     @State private var currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
-    
-    var currentWeekEnd: Date {
-        Calendar.current.date(byAdding: .day, value: 6, to: currentWeekStart)!
-    }
-    var formattedWeekRange: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM"
-        return "\(dateFormatter.string(from: currentWeekStart)) - \(dateFormatter.string(from: currentWeekEnd))"
-    }
     @State private var currentYear = Calendar.current.component(.year, from: Date())
     
     var formattedYearRange: String {
@@ -42,18 +33,28 @@ struct GraphicView: View {
                     if selectedInterval == "weekly_title" {
                         VStack {
                             ZStack{
-//                                RoundedRectangle(cornerRadius: 15)
-//                                    .fill(Color.white)
-//                                    .shadow(radius: 10)
-//                                    .frame(height: 280)
                                 DailyWaterChart(user: user, startDate: currentWeekStart)
                             }
                         }
                     } else if selectedInterval == "monthly_title"{
                         VStack {
-                            ZStack {
-                                MonthlyWaterChart(user: user, monthStart: Calendar.current.date(from: DateComponents(year: currentYear, month: 4, day: 1))!)
+                            HStack {
+                                Button { previousMonth()} label: { Image(systemName:"chevron.left")
+                                        .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
+                                }
+                                
+                                Text(formattedYearRange)
+                                    .font(.headline)
+                                    .foregroundColor(.primary)
+                                    .padding(.horizontal)
+                                
+                                Button { nextMonth() } label: { Image(systemName: "chevron.right")
+                                        .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
+                                }
                             }
+                            .padding(.vertical)
+                                MonthlyWaterChart(user: user, monthStart: Calendar.current.date(from: DateComponents(year: currentYear, month: 4, day: 1))!)
+                            
                         }
                     } else {
                         VStack {
@@ -78,11 +79,10 @@ struct GraphicView: View {
                         }
                     }
                     
-//                    Text("\(Text(LocalizedStringKey("bestday"))): \(user.bestDayAmountDate) - \(Int(user.bestDayAmount)) ml 🏆")
-//                        .font(.system(size: 17, weight: .bold, design: .rounded))
-//                        .foregroundColor(.purple)
-//                        .padding()
-//                        .background(Color.purple.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+                    Text("\(Text(LocalizedStringKey("bestday"))): \(user.bestDayAmountDate) - \(Int(user.bestDayAmount)) ml 🏆")
+                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .foregroundColor(.purple)
+                        .padding()
                     
                     Spacer()
                     
@@ -95,14 +95,21 @@ struct GraphicView: View {
         }
     }
     
-    func previousWeek() {
-        currentWeekStart = Calendar.current.date(byAdding: .day, value: -7, to: currentWeekStart)!
+//    func previousWeek() {
+//        currentWeekStart = Calendar.current.date(byAdding: .day, value: -7, to: currentWeekStart)!
+//    }
+//    
+//    func nextWeek() {
+//        currentWeekStart = Calendar.current.date(byAdding: .day, value: 7, to: currentWeekStart)!
+//    }
+    
+    func previousMonth(){
+        
     }
     
-    func nextWeek() {
-        currentWeekStart = Calendar.current.date(byAdding: .day, value: 7, to: currentWeekStart)!
+    func nextMonth(){
+        
     }
-    
     func previousYear() {
         currentYear -= 1
     }
@@ -276,17 +283,17 @@ struct MonthlyWaterChart: View {
 }
 
 
-extension Date {
-    var startOfWeek: Date? {
-        let calendar = Calendar.current
-        return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self))
-    }
-
-    var startOfYear: Date? {
-        let calendar = Calendar.current
-        return calendar.date(from: calendar.dateComponents([.year], from: self))
-    }
-}
+//extension Date {
+//    var startOfWeek: Date? {
+//        let calendar = Calendar.current
+//        return calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: self))
+//    }
+//
+//    var startOfYear: Date? {
+//        let calendar = Calendar.current
+//        return calendar.date(from: calendar.dateComponents([.year], from: self))
+//    }
+//}
 
 
 #Preview {

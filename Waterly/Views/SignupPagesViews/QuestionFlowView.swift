@@ -64,7 +64,6 @@ struct NameQuestionView: View {
                 
             Spacer()
             HStack{
-//                BackButton(selectedTab: $selectedTab)
                 ContinueButton(user: user, selectedTab: $selectedTab, isDisabled: user.username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
         }
@@ -156,7 +155,7 @@ struct WeightQuestionView: View {
 struct WakeUpQuestionView: View {
     @Binding var selectedTab: Int
     @ObservedObject var user: UserModel
-
+    
     @State private var selectedHour: Int = Calendar.current.component(.hour, from: Date())
     @State private var selectedMin: Int = Calendar.current.component(.minute, from: Date())
     var body: some View {
@@ -187,8 +186,7 @@ struct WakeUpQuestionView: View {
                     Picker("Minute", selection: $selectedMin) {
                         ForEach(0..<60, id: \.self) { minute in
                             Text(String(format: "%02d", minute)).tag(minute)
-                                .font(.system(size: 23, weight: .medium,
-                                              design: .rounded))
+                                .font(.system(size: 23, weight: .medium,design: .rounded))
                         }
                     }
                     .pickerStyle(.wheel)
@@ -224,50 +222,49 @@ struct SleepQuestionView: View {
     @State private var selectedHour: Int = Calendar.current.component(.hour, from: Date())
     @State private var selectedMin: Int = Calendar.current.component(.minute, from: Date())
     var body: some View {
-            VStack {
-                Text("Sleep time?")
-                    .font(.system(size: 43, weight: .bold, design: .rounded))
-                    .padding(.top, 70)
-                
-                Text("\(formattedTime(user.sleep))")
-                    .font(.system(size: 28, weight: .medium, design: .rounded))
-                    .foregroundStyle(Color.blue)
-                    .padding(.top,30)
-                Spacer()
-                HStack {
-                    Picker("Hour", selection: $selectedHour) {
-                        ForEach(0..<24, id: \.self) { hour in
-                            Text("\(hour)").tag(hour)
-                                .font(.system(size: 23, weight: .medium, design: .rounded))
-                        }
+        VStack {
+            Text("Sleep time?")
+                .font(.system(size: 43, weight: .bold, design: .rounded))
+                .padding(.top, 70)
+            
+            Text("\(formattedTime(user.sleep))")
+                .font(.system(size: 28, weight: .medium, design: .rounded))
+                .foregroundStyle(Color.blue)
+                .padding(.top,30)
+            HStack {
+                Picker("Hour", selection: $selectedHour) {
+                    ForEach(0..<24, id: \.self) { hour in
+                        Text("\(hour)").tag(hour)
+                            .font(.system(size: 23, weight: .medium, design: .rounded))
                     }
-                    .pickerStyle(.wheel)
-                    .frame(width: 150, height: 170)
-                    .clipped()
-                    .onChange(of: selectedHour) { updateSleepTime() }
-                    
-                    Text(":")
-                    .font(.system(size: 30, weight: .bold))
-                    
-                    Picker("Minute", selection: $selectedMin) {
-                        ForEach(0..<60, id: \.self) { minute in
-                            Text(String(format: "%02d", minute)).tag(minute)
-                                .font(.system(size: 23, weight: .medium,
-                                              design: .rounded))
-                        }
-                    }
-                    .pickerStyle(.wheel)
-                    .frame(width: 150, height: 170)
-                    .clipped()
-                    .onChange(of: selectedMin) { updateSleepTime() }
                 }
+                .pickerStyle(.wheel)
+                .frame(width: 150, height: 170)
+                .clipped()
+                .onChange(of: selectedHour) { updateSleepTime() }
                 
-                Spacer()
-                HStack{
-                    BackButton(selectedTab: $selectedTab)
-                    ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.wakeup == Date.distantPast)
+                Text(":")
+                .font(.system(size: 30, weight: .bold))
+                
+                Picker("Minute", selection: $selectedMin) {
+                    ForEach(0..<60, id: \.self) { minute in
+                        Text(String(format: "%02d", minute)).tag(minute)
+                            .font(.system(size: 23, weight: .medium,design: .rounded))
+                    }
                 }
+                .pickerStyle(.wheel)
+                .frame(width: 150, height: 170)
+                .clipped()
+                .onChange(of: selectedMin) { updateSleepTime() }
             }
+            
+            Spacer()
+            HStack{
+                BackButton(selectedTab: $selectedTab)
+                ContinueButton(user: user, selectedTab: $selectedTab,isDisabled: user.wakeup ==
+                               Date.distantPast)
+            }
+        }
     }
     private func updateSleepTime() {
         let calendar = Calendar.current
@@ -378,9 +375,9 @@ struct BackButton: View {
         } label: {
             Text("<")
                 .font(.system(size: 22, weight: .bold, design: .rounded))
-                .foregroundStyle(Color.white)
+//                .foregroundStyle(Color.)
                 .frame(width: 90, height: 55)
-                .background(RoundedRectangle(cornerRadius: 25).fill(Color.black))
+                .background(RoundedRectangle(cornerRadius: 25).fill(Color.primary))
                 .shadow(radius: 9)
                 .padding()
         }

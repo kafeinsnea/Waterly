@@ -23,7 +23,7 @@ struct HelloView: View {
                         .font(.system(size: 30, weight: .bold, design: .rounded))
                         .offset(y:-40)
                     
-                    Image("girl")
+                    Image("girl3")
                         .resizable()
                         .scaledToFit()
                         .clipShape(RoundedRectangle(cornerRadius: 20))
@@ -41,7 +41,7 @@ struct HelloView: View {
                             .foregroundStyle(Color.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
-                            .background(RoundedRectangle(cornerRadius: 25).fill(Color.black))
+                            .background(RoundedRectangle(cornerRadius: 25))
                             .padding()
 
                     }
