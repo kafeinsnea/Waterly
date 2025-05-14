@@ -23,3 +23,12 @@ Home Page | Add Button | Stats | Profile | Settings
 - `Core Data`
 - `Charts`
 - `UserNotifications`
+
+## 🧭 Roadmap
+
+- ✅ Light/Dark mode  
+- ✅ English & Turkish support  
+- ✅ Statistics dashboard  
+- 🔜 **Widget support**  
+- 🔜 **Apple Watch companion app**  
+- 🔜 Apple Health integration  
