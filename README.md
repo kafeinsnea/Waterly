@@ -3,7 +3,7 @@ Waterly is a simple, user-friendly iOS app that lets you track your daily water 
 
 ## 📸 Screenshots
 
-Home Page | Stats | Profile | Settings
-:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
-<img src="screenshots/home.jpeg" width="200"/> | <img src="screenshots/stats.jpeg" width="200"/> | <img src="screenshots/profile.jpeg" width="200"/> | <img src="screenshots/settings.jpeg" width="200"/>
+Home Page | Add Button | Stats | Profile | Settings
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
+<img src="screenshots/home.jpeg" width="200"/> | <img src="screenshots/add.jpeg" width="200"/> | <img src="screenshots/stats.jpeg" width="200"/> | <img src="screenshots/profile.jpeg" width="200"/> | <img src="screenshots/settings.jpeg" width="200"/>
 
