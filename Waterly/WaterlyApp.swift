@@ -27,6 +27,11 @@ struct WaterlyApp: App {
                 MainView(user: user)
                     .environment(\.managedObjectContext,persistenceController.container.viewContext)
                     .environmentObject(languageManager)
+                    .onAppear {
+                        Task {
+                            await NotificationManager.requestNotificationPermission()
+                        }
+                    }
             } else {
                 HelloView(user:user)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)

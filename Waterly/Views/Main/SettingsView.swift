@@ -21,8 +21,8 @@ struct SettingsView: View {
                     .onChange(of: isReminderEnabled) { _, newValue in
                         Task {
                             if newValue {
-                                await requestNotificationPermission()
-                                await scheduleNotification()
+                                await NotificationManager.requestNotificationPermission()
+                                await scheduleNotification(startHour: user.wakeup, endHour: user.sleep)
                             } else {
                                 cancelNotifications()
                             }
@@ -48,9 +48,9 @@ struct SettingsView: View {
                 .settingsCard()
                 Spacer()
             }
-            .task {
-                await requestNotificationPermission()
-            }
+//            .task {
+//                await requestNotificationPermission()
+//            }
             .navigationTitle(Text("settings_title"))
 //            .toolbar {
 //                ToolbarItem(placement: .principal) {
@@ -74,37 +74,35 @@ struct SettingsView: View {
             }
         }
     }
-
-    func requestNotificationPermission() async {
-        let center = UNUserNotificationCenter.current()
-        do {
-            let granted = try await center.requestAuthorization(options: [.alert, .sound, .badge])
-            DispatchQueue.main.async {
-                if granted {
-                    print("✅ Kullanıcı bildirim izni verdi.")
-                } else {
-                    print("🚫 Kullanıcı bildirim iznini reddetti.")
-                }
-            }
-        } catch {
-            print("❌ Bildirim izni hatası: \(error.localizedDescription)")
-        }
-    }
-
-    func scheduleNotification() async {
+    
+    func scheduleNotification(startHour: Date, endHour: Date,interval: Int = 2) async {
         let center = UNUserNotificationCenter.current()
         center.removeAllPendingNotificationRequests()
         
-        let hours = [9, 12, 15, 18, 21]
-        for hour in hours {
+       
+        let calendar = Calendar.current
+        guard let wakeHour = calendar.dateComponents([.hour], from: user.wakeup).hour,
+              let sleepHour = calendar.dateComponents([.hour], from: user.sleep).hour else {
+            print("❌ Saatler alınamadı")
+            return
+        }
+
+        var hoursToNotify: [Int] = []
+        var currentHour = wakeHour
+        while currentHour < sleepHour {
+            hoursToNotify.append(currentHour)
+            currentHour += interval
+        }
+
+        for hour in hoursToNotify {
+            var dateComponents = DateComponents()
+            dateComponents.hour = hour
+            dateComponents.minute = 0
+            
             let content = UNMutableNotificationContent()
             content.title = "💧 Time to Drink Water!"
             content.body = "Don't forget to drink a glass of water to stay healthy! 🚰"
             content.sound = .default
-
-            var dateComponents = DateComponents()
-            dateComponents.hour = hour
-            dateComponents.minute = 0
 
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
             let request = UNNotificationRequest(identifier: "water-reminder-\(hour)", content: content, trigger: trigger)

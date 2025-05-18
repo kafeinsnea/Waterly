@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 import Charts
 
 struct GraphicView: View {
@@ -14,11 +15,14 @@ struct GraphicView: View {
     let intervals = ["weekly_title","monthly_title", "yearly_title"]
     @State private var currentWeekStart = Calendar.current.date(from: Calendar.current.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date()))!
     @State private var currentYear = Calendar.current.component(.year, from: Date())
-    
+    @State private var currentMonth = Calendar.current.component(.month, from: Date())
+    @State private var currentMonthYear = Calendar.current.component(.year, from: Date())
     var formattedYearRange: String {
         "\(currentYear)"
     }
-    
+    var formattedYearRange2: String {
+        "\(currentMonthYear)"
+    }
     var body: some View {
         NavigationStack{
             ZStack{
@@ -43,7 +47,7 @@ struct GraphicView: View {
                                         .foregroundStyle(Color(#colorLiteral(red: 0, green: 0.6588235294, blue: 0.9098039216, alpha: 1)))
                                 }
                                 
-                                Text(formattedYearRange)
+                                Text("\(monthName(for : currentMonth)) \(formattedYearRange2)")
                                     .font(.headline)
                                     .foregroundColor(.primary)
                                     .padding(.horizontal)
@@ -53,7 +57,7 @@ struct GraphicView: View {
                                 }
                             }
                             .padding(.vertical)
-                                MonthlyWaterChart(user: user, monthStart: Calendar.current.date(from: DateComponents(year: currentYear, month: 4, day: 1))!)
+                                MonthlyWaterChart(user: user, monthStart: monthStartDate())
                             
                         }
                     } else {
@@ -80,8 +84,8 @@ struct GraphicView: View {
                     }
                     
                     Text("\(Text(LocalizedStringKey("bestday"))): \(user.bestDayAmountDate) - \(Int(user.bestDayAmount)) ml 🏆")
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
-                        .foregroundColor(.purple)
+                        .font(.system(size: 16, weight: .bold, design: .rounded))
+                        .foregroundColor(.indigo)
                         .padding()
                     
                     Spacer()
@@ -102,13 +106,31 @@ struct GraphicView: View {
 //    func nextWeek() {
 //        currentWeekStart = Calendar.current.date(byAdding: .day, value: 7, to: currentWeekStart)!
 //    }
-    
+    func monthName (for month: Int) -> String {
+        let formatter = DateFormatter()
+        return formatter.monthSymbols[month - 1]
+    }
+    func monthStartDate() -> Date {
+        Calendar.current.date(from: DateComponents(year: currentMonthYear,month: currentMonth,day: 1))!
+    }
     func previousMonth(){
-        
+        if currentMonth == 1 {
+            currentMonth = 12
+            currentMonthYear -= 1
+        }
+        else{
+            currentMonth -= 1
+        }
     }
     
     func nextMonth(){
-        
+        if currentMonth == 12 {
+            currentMonth = 1
+            currentMonthYear += 1
+        }
+        else{
+            currentMonth += 1
+        }
     }
     func previousYear() {
         currentYear -= 1
