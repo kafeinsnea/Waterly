@@ -63,7 +63,7 @@ class UserModel: ObservableObject {
                 self.lastUpdated = userGoal.lastUpdated ?? Date()
                 self.gender = userGoal.gender ?? ""
                 self.weight = Int(userGoal.weight)
-                
+                self.sportLevel = userGoal.sportLevel ?? ""
                 // 🌍 UTC'yi yerel saate çevirerek al
                 self.wakeup = convertToLocal(date: userGoal.wakeup ?? Date())
                 self.sleep = convertToLocal(date: userGoal.sleep ?? Date())
@@ -103,6 +103,7 @@ class UserModel: ObservableObject {
             userGoal.lastUpdated = Date()
             userGoal.gender = gender
             userGoal.weight = Int64(weight)
+            userGoal.sportLevel = sportLevel
             
             // 🌍 Yerel zamanı UTC'ye çevirerek kaydet
             userGoal.wakeup = convertToUTC(date: wakeup)

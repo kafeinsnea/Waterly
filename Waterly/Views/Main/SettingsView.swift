@@ -21,10 +21,16 @@ struct SettingsView: View {
                     .onChange(of: isReminderEnabled) { _, newValue in
                         Task {
                             if newValue {
-                                await NotificationManager.requestNotificationPermission()
-                                await scheduleNotification(startHour: user.wakeup, endHour: user.sleep)
+                                      let granted = await NotificationManager.requestNotificationPermission()
+                                      if granted {
+                                          let wakeUpHour = Calendar.current.component(.hour, from: user.wakeup)
+                                          let sleepHour = Calendar.current.component(.hour, from: user.sleep)
+                                          await NotificationManager.scheduleWaterNotifications(wakeUpHour: wakeUpHour, sleepHour: sleepHour)
+                                      } else {
+                                          isReminderEnabled = false
+                                      }
                             } else {
-                                cancelNotifications()
+                                NotificationManager.cancelAllNotifications()
                             }
                         }
                     }
@@ -48,19 +54,16 @@ struct SettingsView: View {
                 .settingsCard()
                 Spacer()
             }
+            .task {
+                let settings = await UNUserNotificationCenter.current().notificationSettings()
+                if settings.authorizationStatus != .authorized {
+                    isReminderEnabled = false
+                }
+            }
 //            .task {
 //                await requestNotificationPermission()
 //            }
             .navigationTitle(Text("settings_title"))
-//            .toolbar {
-//                ToolbarItem(placement: .principal) {
-//                    Text("settings_title")
-//                        .font(.system(size: 28, weight: .bold, design: .rounded))
-//                        .foregroundColor(.primary)
-//                        .padding(.top, 13)
-//                }
-//            }
-//            .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .alert("delete_confirmation", isPresented: $isShowingDeleteConfirmation) {
                 Button("cancel", role: .cancel) {}
                 Button("delete", role: .destructive) {
@@ -75,53 +78,6 @@ struct SettingsView: View {
         }
     }
     
-    func scheduleNotification(startHour: Date, endHour: Date,interval: Int = 2) async {
-        let center = UNUserNotificationCenter.current()
-        center.removeAllPendingNotificationRequests()
-        
-       
-        let calendar = Calendar.current
-        guard let wakeHour = calendar.dateComponents([.hour], from: user.wakeup).hour,
-              let sleepHour = calendar.dateComponents([.hour], from: user.sleep).hour else {
-            print("❌ Saatler alınamadı")
-            return
-        }
-
-        var hoursToNotify: [Int] = []
-        var currentHour = wakeHour
-        while currentHour < sleepHour {
-            hoursToNotify.append(currentHour)
-            currentHour += interval
-        }
-
-        for hour in hoursToNotify {
-            var dateComponents = DateComponents()
-            dateComponents.hour = hour
-            dateComponents.minute = 0
-            
-            let content = UNMutableNotificationContent()
-            content.title = "💧 Time to Drink Water!"
-            content.body = "Don't forget to drink a glass of water to stay healthy! 🚰"
-            content.sound = .default
-
-            let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-            let request = UNNotificationRequest(identifier: "water-reminder-\(hour)", content: content, trigger: trigger)
-
-            do {
-                try await center.add(request)
-                print("✅ Bildirim \(hour):00 için eklendi.")
-            } catch {
-                print("❌ Bildirim eklenirken hata: \(error.localizedDescription)")
-            }
-        }
-    }
-
-    func cancelNotifications() {
-        let center = UNUserNotificationCenter.current()
-        center.removeAllPendingNotificationRequests()
-        print("🚫 Tüm bildirimler iptal edildi!")
-    }
-
     func showLanguageSelection() {
         let actionSheet = UIAlertController(title: NSLocalizedString("change_language", comment: ""), message: nil, preferredStyle: .actionSheet)
         

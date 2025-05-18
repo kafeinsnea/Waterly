@@ -189,7 +189,7 @@ struct ProfileEditView: View {
                             Text("intense_title").tag("intense")
                         }
                         .pickerStyle(.menu)
-                        .frame(width: 180)
+                        .frame(width: 90)
                     }
                 }
                 .padding()

@@ -54,7 +54,6 @@ struct HomeView: View {
                     }
                     .frame(width: 180, height: 180)
 
-//                    HStack(spacing:45){
                         Button(action: {
                             isSheetPresented = true
                         }) {
@@ -73,30 +72,9 @@ struct HomeView: View {
                             SwitchCupView(user: user, selectedCupSize: $selectedCupSize)
                                 .presentationDetents([.fraction(0.5)])
 
-//                            CustomAmountSheet(isPresented: $isSheetPresented, user: user)
                         }
                         .presentationDetents([.medium])
                         .padding(8)
-                        
-//                        Button {
-//                            showAlert = true
-//                        } label: {
-//                            Image(systemName: "arrow.uturn.backward.circle.fill")
-//                                .font(.system(size: 20,weight: .bold))
-//                            .frame(width: 60, height: 60)
-//                            .background(Color.red)
-//                            .foregroundColor(.white)
-//                            .clipShape(Circle())
-//                            .shadow(color: .gray.opacity(0.4), radius: 10,x:0,y:4)
-//                        }
-//                        .alert("Remove last added water?", isPresented: $showAlert) {
-//                            Button("Cancel", role: .cancel) {}
-//                            Button("Remove", role: .destructive) {
-//                                user.removeLastAddedWater()
-//                            }
-//                        }
-//                    }
-//                    .padding()
                     
                     VStack(spacing: -8) {
                         Text("todays_records")

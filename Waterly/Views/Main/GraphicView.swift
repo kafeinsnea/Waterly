@@ -99,13 +99,6 @@ struct GraphicView: View {
         }
     }
     
-//    func previousWeek() {
-//        currentWeekStart = Calendar.current.date(byAdding: .day, value: -7, to: currentWeekStart)!
-//    }
-//    
-//    func nextWeek() {
-//        currentWeekStart = Calendar.current.date(byAdding: .day, value: 7, to: currentWeekStart)!
-//    }
     func monthName (for month: Int) -> String {
         let formatter = DateFormatter()
         return formatter.monthSymbols[month - 1]
