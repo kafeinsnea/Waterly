@@ -205,6 +205,22 @@ struct YearlyWaterChart: View {
                 .cornerRadius(7)
             }
         }
+        .chartYAxis {
+            AxisMarks(position: .leading) { _ in
+                AxisGridLine()
+                    .foregroundStyle(.gray.opacity(0.1))
+                AxisTick().foregroundStyle(.gray.opacity(0.2))
+                AxisValueLabel().foregroundStyle(.gray)
+            }
+        }
+        .chartXAxis {
+            AxisMarks(values: .stride(by: .day)) { value in
+                AxisGridLine()
+                    .foregroundStyle(.gray.opacity(0.1))
+                AxisTick().foregroundStyle(.gray.opacity(0.2))
+                AxisValueLabel().foregroundStyle(.gray)
+            }
+        }
         .frame(height: 230)
 //        .chartXAxis {
 //            AxisMarks { mark in
